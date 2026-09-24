@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
+
 /**
  * Local HLS / Media Proxy with Obfuscation Decryption.
  *
@@ -64,14 +67,21 @@ function parseHeaders(raw) {
   return {};
 }
 
+function b64toU8(value) {
+  const binary = atob(value);
+  const out = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
+  return out;
+}
+
 function decryptPlaylist(rawText, pk) {
   if (!pk) return rawText;
   const trimmed = rawText.trim();
   if (trimmed.startsWith("#EXTM3U")) return rawText;
 
   try {
-    const keyBuf = Buffer.from(pk, "base64");
-    const cipherBuf = Buffer.from(trimmed, "base64");
+    const keyBuf = b64toU8(pk);
+    const cipherBuf = b64toU8(trimmed);
     if (!cipherBuf.length || !keyBuf.length) return rawText;
 
     const decryptedBytes = new Uint8Array(cipherBuf.length);

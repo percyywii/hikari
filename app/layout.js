@@ -1,23 +1,25 @@
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import Header from "@/partials/header/Header";
+import Footer from "@/partials/footer/Footer";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from "./SessionProvider";
 import { getAuthSession } from "./api/auth/[...nextauth]/route";
+import { ThemeProvider } from "@/context/ThemeContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({ subsets: ["latin"] });
 
 
 export const metadata = {
-  metadataBase: new URL('https://taro-anime.vercel.app'),
-  applicationName: "Taro",
-  title: "Taro : Stream Anime Free Without Those Annoying Ads",
+  metadataBase: new URL('https://hikari.app'),
+  applicationName: "Hikari",
+  title: "Hikari : Stream Anime Free in HD Without Annoying Ads",
   icons: {
-    icon: '/images/logo.png',
+    icon: '/images/logo.svg',
   },
-  description: "Welcome to Taro, your ultimate destination for streaming anime free of charge and without any annoying ads. Dive into a vast collection of your favorite anime series and movies, all available in high quality. Enjoy a seamless viewing experience with zero interruptions, and explore new titles every day. At Taro, your anime adventure awaits!",
+  description: "Welcome to Hikari (光), your ultimate destination for streaming anime free of charge in HD. Dive into a vast collection of subbed and dubbed anime series and movies with multi-server resilience, synchronized audio, and seamless viewing. At Hikari, your anime journey awaits!",
   keywords: [
     'anime',
     'anilist-tracker',
@@ -41,7 +43,7 @@ export const metadata = {
     'latest dubbed anime',
     'subbed anime streaming',
     'dubbed anime streaming',
-    'Taro latest anime',
+    'Tenro latest anime',
     'anime watch list',
     'anime reviews',
     'anime news',
@@ -64,73 +66,71 @@ export const metadata = {
     'anime online free',
     'anime episode guide',
     'anime synopsis',
-    'taro',
-    'taro anime',
-    'taro anime watch online',
-    'taro-anime website',
-    'taro-anime',
-    'taro vercel',
-    'taro vercel.dev',
+    'tenro',
+    'tenro anime',
+    'tenro anime watch online',
+    'tenro-anime website',
+    'tenro anime app',
+    'tenro app',
     'anime release schedule',
     'watch anime legally',
     'anime marathons',
     'anime streaming without signup',
-    'taro anime library',
-    'taro anime catalog',
+    'tenro anime library',
+    'tenro anime catalog',
     'latest anime trends',
     'anime simulcast',
     'anime with multiple audio tracks',
-    'taro dubbed anime',
+    'tenro dubbed anime',
     'anime in multiple languages',
     'anime with subtitles',
     'anime episode tracker',
-    'taro anime subscriptions',
+    'tenro anime subscriptions',
     'free anime episodes',
-    'latest anime on taro',
+    'latest anime on tenro',
     'anime streaming high quality',
     'discover new anime',
     'anime streaming without ads',
-    'taro anime news',
+    'tenro anime news',
     'anime streaming schedule',
-    'taro anime events',
-    'follow anime on taro',
+    'tenro anime events',
+    'follow anime on tenro',
     'watch anime in 4K',
     'anime HD streaming',
-    'taro anime blog',
+    'tenro anime blog',
     'anime streaming experience',
     'anime series marathon',
-    'popular anime on taro',
+    'popular anime on tenro',
     'anime episode countdown',
     'anime streaming updates',
     'anime on demand',
-    'taro anime guide',
-    'anime streaming service taro',
+    'tenro anime guide',
+    'anime streaming service tenro',
     'anime streaming interface',
-    'watch anime taro website'
+    'watch anime tenro website'
   ],
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Taro : Stream Anime Free Without Those Annoying Ads",
+    title: "Hikari : Stream Anime Free in HD",
   },
   formatDetection: {
     telephone: false,
   },
   openGraph: {
     type: "website",
-    siteName: "Taro",
-    title: "Taro : Stream Anime Free Without Those Annoying Ads",
-    description: "Welcome to Taro, your ultimate destination for streaming anime free of charge and without any annoying ads. Dive into a vast collection of your favorite anime series and movies, all available in high quality. Enjoy a seamless viewing experience with zero interruptions, and explore new titles every day. At Taro, your anime adventure awaits!",
+    siteName: "Hikari",
+    title: "Hikari : Stream Anime Free in HD Without Annoying Ads",
+    description: "Welcome to Hikari (光), your ultimate destination for streaming anime free of charge in HD. Dive into a vast collection of subbed and dubbed anime series and movies with zero interruptions.",
   },
   twitter: {
-    card: "summary",
-    title: "Taro : Stream Anime Free Without Those Annoying Ads",
-    description: "Welcome to Taro, your ultimate destination for streaming anime free of charge and without any annoying ads. Dive into a vast collection of your favorite anime series and movies, all available in high quality. Enjoy a seamless viewing experience with zero interruptions, and explore new titles every day. At Taro, your anime adventure awaits!",
+    card: "summary_large_image",
+    title: "Hikari : Stream Anime Free in HD Without Annoying Ads",
+    description: "Welcome to Hikari (光), your ultimate destination for streaming anime free of charge in HD. Dive into a vast collection of subbed and dubbed anime series and movies with zero interruptions.",
   },
   other: {
     'google-site-verification': 'ls1OUoOoLjxYsmKMPQ1ML9P99TWDsm7d5hfnGQjW7Tw',
     "X-Frame-Options": "SAMEORIGIN",
-
   }
 };
 
@@ -139,16 +139,18 @@ export default async function RootLayout({ children }) {
   const session = await getAuthSession();
 
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <AuthProvider session={session}>
-          <Header />
-          {children}
-          {/* <Footer /> */}
-        </AuthProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={outfit.className}>
+        <ThemeProvider>
+          <AuthProvider session={session}>
+            <Header />
+            {children}
+            <Footer />
+          </AuthProvider>
 
-        <Analytics />
-        <ToastContainer draggable theme="dark" />
+          <Analytics />
+          <ToastContainer draggable theme="dark" />
+        </ThemeProvider>
       </body>
     </html>
   );

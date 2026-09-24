@@ -4,7 +4,7 @@ import clientPromise from "@/mongodb/db";
 import { getServerSession } from "next-auth"
 
 export const authOptions = {
-  adapter: MongoDBAdapter(clientPromise),
+  ...(clientPromise && { adapter: MongoDBAdapter(clientPromise) }),
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     {
@@ -53,8 +53,8 @@ export const authOptions = {
 
           let customLists = userLists || [];
 
-          if (!userLists?.includes("Watched Via Taro")) {
-            customLists.push("Watched Via Taro");
+          if (!userLists?.includes("Watched Via Tenro")) {
+            customLists.push("Watched Via Tenro");
             const fetchGraphQL = async (query, variables) => {
               const response = await fetch("https://graphql.anilist.co/", {
                 method: "POST",
@@ -125,6 +125,7 @@ export const authOptions = {
 
 const handler = NextAuth(authOptions)
 
-export const getAuthSession = () => getServerSession(authOptions)
+export const getAuthSession = () =>
+  clientPromise ? getServerSession(authOptions).catch(() => null) : null;
 
 export { handler as GET, handler as POST }

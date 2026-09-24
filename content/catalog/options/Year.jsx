@@ -1,32 +1,38 @@
-"use client"
-import { useState } from "react"
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io"
+"use client";
+
+import { useState } from "react";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 const Year = () => {
-  const [isOpened, setIsOpened] = useState(true)
-  const [startYear, setStartYear] = useState("")
+  const [isOpened, setIsOpened] = useState(true);
 
   return (
     <div>
-
       <div
-        className="flex justify-between items-center cursor-pointer border-[#1a1921] border-b-[2px] pb-2 mt-4"
-        onClick={() => setIsOpened(prev => !prev)}
+        className="flex justify-between items-center cursor-pointer border-b border-slate-200 dark:border-[#1E2235] pb-2 mt-4 select-none"
+        onClick={() => setIsOpened((prev) => !prev)}
       >
-        <div className="text-[#efefef]">Year</div>
-        <div>{isOpened ? <IoIosArrowUp /> : <IoIosArrowDown />}</div>
+        <div className="text-slate-900 dark:text-slate-100 font-semibold font-['Outfit'] text-sm">
+          Release Window
+        </div>
+        <div className="text-slate-400">
+          {isOpened ? <IoIosArrowUp /> : <IoIosArrowDown />}
+        </div>
       </div>
 
-      {isOpened ? <div
-        className="mt-3 px-1 flex items-center justify-center"
-      >
-        <div className="bg-[#1a1921] px-8 py-2 w-max rounded-md cursor-pointer text-[#e9e8e88e]">2020</div>
-        <div className="w-full bg-[#2c3144] h-[2px] max-w-20"></div>
-        <div className="bg-[#1a1921] px-8 py-2 w-max rounded-md cursor-pointer text-[#e9e8e88e]">2023</div>
-      </div> : null}
-
+      {isOpened ? (
+        <div className="mt-3 px-1 flex items-center justify-center gap-2">
+          <div className="bg-slate-100 dark:bg-[#161926] border border-slate-200 dark:border-[#23283E] px-4 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 font-medium text-xs">
+            2010
+          </div>
+          <div className="w-8 bg-slate-300 dark:bg-[#2c3144] h-[2px]"></div>
+          <div className="bg-slate-100 dark:bg-[#161926] border border-slate-200 dark:border-[#23283E] px-4 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 font-medium text-xs">
+            2025
+          </div>
+        </div>
+      ) : null}
     </div>
-  )
-}
+  );
+};
 
-export default Year
+export default Year;

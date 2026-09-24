@@ -1,72 +1,189 @@
-import { useWatchContext } from "@/context/Watch"
-import { FaMicrophone } from "react-icons/fa6"
+"use client";
+
+import { useMemo } from "react";
+import { useWatchContext } from "@/context/Watch";
+import { FaMicrophone, FaServer, FaCheck, FaExclamationTriangle } from "react-icons/fa";
+import { MdSubtitles } from "react-icons/md";
+import { FiRefreshCw } from "react-icons/fi";
 
 const Server = () => {
-  const { isDub, setIsDub, server, setServer, episodes } = useWatchContext()
+  const {
+    isDub,
+    setIsDub,
+    server,
+    setServer,
+    episodes,
+    watchInfo,
+    sourceIndex,
+    switchServer,
+    serverStatuses,
+    playerState,
+    audioTrack,
+    setAudioTrack,
+    availableAudioTracks,
+    retryWatch,
+  } = useWatchContext();
 
+  const [subEpisodes, dubEpisodes] = useMemo(() => {
+    if (episodes === "loading" || !Array.isArray(episodes)) return [[], []];
+    return [
+      episodes.filter((item) => item?.isSubbed !== false),
+      episodes.filter((item) => item?.isDubbed !== false),
+    ];
+  }, [episodes]);
 
-  const [sub, dub] = episodes !== "loading" && episodes.length > 0
-    ? [episodes.filter(e => e?.isSubbed), episodes.filter(e => e?.isDubbed)]
-    : [[], []];
+  const hasSub = subEpisodes.length > 0;
+  const hasDub = dubEpisodes.length > 0;
 
+  const sources = watchInfo?.watchData?.sources || [];
+  const currentSource = sources[sourceIndex] || sources[0];
+
+  const handleAudioSelect = (type) => {
+    if (type === "dub") {
+      setIsDub(true);
+      setServer("dub");
+      setAudioTrack("eng");
+    } else {
+      setIsDub(false);
+      setServer("sub");
+      setAudioTrack("jpn");
+    }
+  };
 
   return (
-    <div className="w-full h-full flex flex-col gap-1 ">
-      <div className="bg-[#323044] w-full h-full px-4 flex items-center gap-8 max-[880px]:py-2">
-
-        <div className="flex items-center">
-          <span>
-            <svg viewBox="0 0 32 32" className="w-5 h-5 mr-1 max-[500px]:w-4" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M4.6661 6.66699C4.29791 6.66699 3.99943 6.96547 3.99943 7.33366V24.667C3.99943 25.0352 4.29791 25.3337 4.6661 25.3337H27.3328C27.701 25.3337 27.9994 25.0352 27.9994 24.667V7.33366C27.9994 6.96547 27.701 6.66699 27.3328 6.66699H4.6661ZM8.66667 21.3333C8.29848 21.3333 8 21.0349 8 20.6667V11.3333C8 10.9651 8.29848 10.6667 8.66667 10.6667H14C14.3682 10.6667 14.6667 10.9651 14.6667 11.3333V12.6667C14.6667 13.0349 14.3682 13.3333 14 13.3333H10.8C10.7264 13.3333 10.6667 13.393 10.6667 13.4667V18.5333C10.6667 18.607 10.7264 18.6667 10.8 18.6667H14C14.3682 18.6667 14.6667 18.9651 14.6667 19.3333V20.6667C14.6667 21.0349 14.3682 21.3333 14 21.3333H8.66667ZM18 21.3333C17.6318 21.3333 17.3333 21.0349 17.3333 20.6667V11.3333C17.3333 10.9651 17.6318 10.6667 18 10.6667H23.3333C23.7015 10.6667 24 10.9651 24 11.3333V12.6667C24 13.0349 23.7015 13.3333 23.3333 13.3333H20.1333C20.0597 13.3333 20 13.393 20 13.4667V18.5333C20 18.607 20.0597 18.6667 20.1333 18.6667H23.3333C23.7015 18.6667 24 18.9651 24 19.3333V20.6667C24 21.0349 23.7015 21.3333 23.3333 21.3333H18Z" fill="currentColor"></path></svg>
-          </span>
-          Sub
+    <div className="w-full flex flex-col divide-y divide-slate-200 dark:divide-[#1A1D2B] bg-slate-50 dark:bg-[#0E1017] transition-colors">
+      {/* Audio Mode Selection (Sub vs Dub) */}
+      <div className="px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          <span>Audio Feed</span>
         </div>
 
-        <div className="flex gap-2">
-          {(sub && sub.length > 0) ?
-            <div
-              className="px-4 py-[6px] text-[15px] bg-[#413d57] hover:bg-[#4a446c] border border-[#5b5682] rounded-md cursor-pointer"
-              style={{ backgroundColor: ("sub" === server) ? "#4a446c" : "" }}
-              onClick={() => {
-                isDub && setIsDub(false)
-                setServer("sub")
-              }}
-            >Load Sub</div>
-            :
+        <div className="flex items-center gap-2">
+          {/* Sub Option */}
+          <button
+            type="button"
+            disabled={!hasSub}
+            onClick={() => handleAudioSelect("sub")}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              !isDub
+                ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/10"
+                : hasSub
+                ? "bg-white dark:bg-[#161926] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2235] border border-slate-200 dark:border-[#23283E]"
+                : "opacity-40 cursor-not-allowed bg-slate-100 dark:bg-[#12141F] text-slate-400 dark:text-slate-500 border border-transparent"
+            }`}
+          >
+            <MdSubtitles className="w-3.5 h-3.5" />
+            <span>Sub (Japanese)</span>
+            {!hasSub && <span className="text-[10px] text-slate-400 dark:text-slate-500">(N/A)</span>}
+          </button>
 
-            <div
-              className="px-4  py-[6px] text-[15px] bg-[#413d57] hover:bg-[#4a446c] border border-[#5b5682] rounded-md cursor-pointer"
-            >No Sub Found</div>}
+          {/* Dub Option */}
+          <button
+            type="button"
+            disabled={!hasDub && !availableAudioTracks.some((t) => t.id === "eng")}
+            onClick={() => handleAudioSelect("dub")}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              isDub || audioTrack === "eng"
+                ? "bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/50 shadow-sm shadow-purple-500/10"
+                : hasDub || availableAudioTracks.some((t) => t.id === "eng")
+                ? "bg-white dark:bg-[#161926] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2235] border border-slate-200 dark:border-[#23283E]"
+                : "opacity-40 cursor-not-allowed bg-slate-100 dark:bg-[#12141F] text-slate-400 dark:text-slate-500 border border-transparent"
+            }`}
+          >
+            <FaMicrophone className="w-3 h-3" />
+            <span>Dub (English)</span>
+            {!hasDub && !availableAudioTracks.some((t) => t.id === "eng") && (
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">(N/A)</span>
+            )}
+          </button>
         </div>
       </div>
 
-      <div className="bg-[#323044] w-full h-full px-4 flex items-center gap-8 max-[880px]:py-2">
-        {dub && dub.length > 0 ?
-          <>
-            <div className="flex items-center">
-              <span className="mr-1">
-                <FaMicrophone />
-              </span>
-              Dub
+      {/* Available Streaming Servers */}
+      <div className="px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          <FaServer className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+          <span>Active Server</span>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          {sources.length > 0 ? (
+            sources.map((src, idx) => {
+              const isSelected = idx === sourceIndex;
+              const status =
+                serverStatuses[idx] ||
+                (isSelected
+                  ? playerState === "error"
+                    ? "failed"
+                    : playerState === "loading"
+                    ? "connecting"
+                    : "ready"
+                  : "idle");
+
+              return (
+                <button
+                  key={src.serverId || idx}
+                  type="button"
+                  onClick={() => switchServer(idx)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    isSelected
+                      ? "bg-cyan-500/10 text-cyan-700 dark:text-white border border-cyan-500/60 shadow-sm shadow-cyan-500/10"
+                      : "bg-white dark:bg-[#141724] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#1C2032] border border-slate-200 dark:border-[#202538]"
+                  }`}
+                >
+                  {/* Status Indicator Dot */}
+                  <span className="relative flex h-2 w-2">
+                    {status === "connecting" && (
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    )}
+                    <span
+                      className={`relative inline-flex rounded-full h-2 w-2 ${
+                        status === "ready"
+                          ? "bg-emerald-500"
+                          : status === "connecting"
+                          ? "bg-amber-400"
+                          : status === "failed"
+                          ? "bg-rose-500"
+                          : "bg-slate-400"
+                      }`}
+                    ></span>
+                  </span>
+
+                  <span>{src.serverName || `HD-${idx + 1}`}</span>
+
+                  {src.type === "embed" && (
+                    <span className="text-[10px] px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                      Embed
+                    </span>
+                  )}
+
+                  {isSelected && status === "ready" && (
+                    <FaCheck className="w-2.5 h-2.5 text-cyan-600 dark:text-cyan-400 ml-0.5" />
+                  )}
+                  {isSelected && status === "failed" && (
+                    <FaExclamationTriangle className="w-2.5 h-2.5 text-rose-500 dark:text-rose-400 ml-0.5" />
+                  )}
+                </button>
+              );
+            })
+          ) : (
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+              <span>Resolving fast CDN nodes...</span>
+              <button
+                type="button"
+                onClick={retryWatch}
+                className="ml-2 p-1 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors"
+                title="Retry resolution"
+              >
+                <FiRefreshCw className="w-3.5 h-3.5" />
+              </button>
             </div>
-
-            <div className="flex gap-2 ml-[2px]">
-
-              <div
-                className="px-4 py-[6px] text-[15px] bg-[#413d57] hover:bg-[#4a446c] border border-[#5b5682] rounded-md cursor-pointer"
-                style={{ backgroundColor: ("dub" === server) ? "#4a446c" : "" }}
-                onClick={() => {
-                  !isDub && setIsDub(true)
-                  setServer("dub")
-                }}
-              >Load Dub</div>
-
-            </div>
-          </>
-          : null}
-
+          )}
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Server
+export default Server;

@@ -1,46 +1,123 @@
-import Image from "next/image"
-import Link from "next/link"
+import Image from "next/image";
+import Link from "next/link";
 
 const AnimeInfo = ({ info }) => {
+  const title = info?.title?.english || info?.title?.romaji || info?.title?.userPreferred || "Anime";
+  const cleanDescription = info?.description?.replace(/<[^>]*>/g, "") || "No synopsis available.";
 
   return (
-    <div className="text-white flex gap-6">
-      <Image
-        src={info?.coverImage?.extraLarge}
-        alt="Taro"
-        width={215}
-        height={300}
-        className="rounded-2xl object-cover h-80 w-[16rem] max-[840px]:h-[14rem] max-[380px]:h-[9rem]"
-      />
-      <div className="mt-2">
-        <h1 className="text-2xl font-['poppins'] font-medium max-[840px]:text-[22px] max-[380px]:text-[19px]">{info?.title?.english}</h1>
-        <div className="flex gap-2 mt-1 mb-2">
-          <span className="bg-[#727587] text-[13px] px-1 rounded-[4px] text-slate-900 font-medium">HD</span>
-          <span className="bg-[#727587] text-[13px] px-1 rounded-[4px] text-slate-900 font-medium">SD</span>
+    <div className="flex gap-6 max-[768px]:flex-col text-slate-900 dark:text-white transition-colors">
+      <div className="shrink-0">
+        <Image
+          src={info?.coverImage?.extraLarge || info?.coverImage?.large || "/placeholder.png"}
+          alt={title}
+          width={220}
+          height={320}
+          className="rounded-2xl object-cover h-80 w-[15rem] max-[840px]:h-[14rem] max-[380px]:h-[10rem] shadow-xl border border-slate-200/80 dark:border-[#1E2235]"
+        />
+      </div>
+
+      <div className="mt-1 flex-1 min-w-0">
+        <h1 className="text-2xl sm:text-3xl font-['Outfit'] font-bold text-slate-900 dark:text-white tracking-tight">
+          {title}
+        </h1>
+
+        <div className="flex items-center gap-2 mt-2 mb-3">
+          <span className="bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 text-xs px-2 py-0.5 rounded-md font-semibold">
+            HD 1080p
+          </span>
+          <span className="bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 text-xs px-2 py-0.5 rounded-md font-medium">
+            Multi-Sub
+          </span>
+          {info?.averageScore && (
+            <span className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-xs px-2 py-0.5 rounded-md font-semibold">
+              ★ {(info.averageScore / 10).toFixed(1)} / 10
+            </span>
+          )}
         </div>
 
-        <p className="text-[15px] font-['poppins'] text-[#fff4f4b1] overflow-hidden text-ellipsis line-clamp-4 mb-2">{info?.description?.replace(/<[^>]*>/g, '')}</p>
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed overflow-hidden text-ellipsis line-clamp-4 mb-4">
+          {cleanDescription}
+        </p>
 
-        <div className="flex gap-32 justify-between max-[960px]:flex-col max-[960px]:gap-0">
-          <div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Type: <Link target="_" href={`/catalog?type=${info?.format}&sort=POPULARITY_DESC`} className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.format}</Link></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Country: <Link target="_" href={`/catalog?country=${info?.countryOfOrigin}&sort=POPULARITY_DESC`} className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.countryOfOrigin}</Link></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Premiered: <Link target="_" href={`/catalog?syear=${info?.startDate?.year}${info?.startDate?.month < 10 ? `0${info?.startDate?.month}` : info?.startDate?.month}${info?.startDate?.day < 10 ? `0${info?.startDate?.day}` : info?.startDate?.day}&sort=POPULARITY_DESC`} className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"][info?.startDate?.month]} {info?.startDate?.day}, {info?.startDate?.year}</Link></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Date aired: <Link href={`/year/${info?.seasonYear}`} className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.seasonYear}</Link></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Season: <Link href={`/season/${info?.season}`} className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.season}</Link></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Status: <Link target="_" href={`/catalog?airing=${info?.status}&sort=POPULARITY_DESC`} className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.status}</Link></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5 text-xs sm:text-sm border-t border-slate-200/80 dark:border-[#1E2235] pt-3">
+          <div className="space-y-1 text-slate-600 dark:text-slate-400">
+            {info?.format && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Type: </span>
+                <Link href={`/catalog?type=${info?.format}&sort=POPULARITY_DESC`} className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">
+                  {info?.format}
+                </Link>
+              </div>
+            )}
+            {info?.countryOfOrigin && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Country: </span>
+                <span className="text-slate-800 dark:text-slate-200 font-medium">{info?.countryOfOrigin}</span>
+              </div>
+            )}
+            {info?.startDate?.year && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Premiered: </span>
+                <span className="text-slate-800 dark:text-slate-200 font-medium">
+                  {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][info?.startDate?.month - 1 || 0]} {info?.startDate?.day || 1}, {info?.startDate?.year}
+                </span>
+              </div>
+            )}
+            {info?.seasonYear && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Season Year: </span>
+                <Link href={`/year/${info?.seasonYear}`} className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">
+                  {info?.seasonYear}
+                </Link>
+              </div>
+            )}
+            {info?.status && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Status: </span>
+                <span className={info?.status === "RELEASING" ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-slate-800 dark:text-slate-200"}>
+                  {info?.status}
+                </span>
+              </div>
+            )}
           </div>
-          <div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Genres: <span className="text-[#e26bbcd9]">{info?.genres.map((item, index) => <Link key={item} target="_" href={`/catalog?genres=%5B"${item}"%5D&sort=POPULARITY_DESC`} className="cursor-pointer hover:text-[#ff3df9]">{item}{info?.genres?.length - 1 === index ? null : ", "}</Link>)}</span></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Episodes: <Link target="_" href={`/catalog?episodes=${info?.episodes}&sort=POPULARITY_DESC`} className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.episodes}</Link></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Studios: <span className="text-[#e26bbcd9]">{info?.studios?.nodes.map((item, index) => <Link key={item?.name} href={`/genre/${item?.name}`} className="cursor-pointer hover:text-[#ff3df9]">{item?.name}{info?.studios?.nodes?.length - 1 === index ? null : ", "}</Link>)}</span></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Rating: <span className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.averageScore / 10}</span></div>
-            <div className="text-sm text-[#dadada] font-['poppins'] mt-[2px]">Duration: <span className="text-[#e26bbcd9] cursor-pointer hover:text-[#ff3df9]">{info?.duration} m</span></div>
+
+          <div className="space-y-1 text-slate-600 dark:text-slate-400">
+            {info?.genres && info.genres.length > 0 && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Genres: </span>
+                <span className="text-cyan-600 dark:text-cyan-400 font-semibold">
+                  {info.genres.map((genre, idx) => (
+                    <Link key={genre} href={`/catalog?genres=%5B"${genre}"%5D&sort=POPULARITY_DESC`} className="hover:underline">
+                      {genre}{idx < info.genres.length - 1 ? ", " : ""}
+                    </Link>
+                  ))}
+                </span>
+              </div>
+            )}
+            {info?.episodes && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Episodes: </span>
+                <span className="text-slate-800 dark:text-slate-200 font-medium">{info?.episodes}</span>
+              </div>
+            )}
+            {info?.duration && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Duration: </span>
+                <span className="text-slate-800 dark:text-slate-200 font-medium">{info?.duration} min</span>
+              </div>
+            )}
+            {info?.studios?.nodes?.[0]?.name && (
+              <div>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Studio: </span>
+                <span className="text-cyan-600 dark:text-cyan-400 font-semibold">{info?.studios?.nodes[0]?.name}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AnimeInfo
+export default AnimeInfo;

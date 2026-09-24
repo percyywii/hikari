@@ -12,29 +12,18 @@ import Comments from "@/content/watch/Comment/Comment"
 import Recommendation from "@/content/watch/Recommendation/Recommendation"
 import AnimeNotFound from "@/components/errors/AnimeNotFound"
 
+import metadataService from "@/services/metadataService"
+
 export async function generateMetadata({ params }) {
-  const { id: AnimeID } = params
+  const { id: AnimeID } = await params
   const data = await AnimeInfoAnilist(AnimeID)
-  const hasAnime = (data?.title?.english || data?.title?.romaji)
-  return {
-    title: hasAnime ? `Watch ${data?.title?.english || data?.title?.romaji} - Taro` || 'Loading...' : `Anime Not Found`,
-    description: data?.description?.slice(0, 180),
-    openGraph: {
-      title: "Watch" + ' - ' + data?.title?.english || data?.title?.romaji + "in Taro",
-      images: [data?.coverImage?.extraLarge],
-      description: data?.description,
-    },
-    twitter: {
-      card: "summary",
-      title: "Watch" + ' - ' + data?.title?.english || data?.title?.romaji + "in Taro",
-      description: data?.description?.slice(0, 180),
-    },
-  }
+  if (!data) return { title: "Anime Not Found - Hikari" }
+  return metadataService.generateAnimeMetadata(data)
 }
 
 
 const Watch = async ({ params }) => {
-  const { id: AnimeID } = params
+  const { id: AnimeID } = await params
 
   const animeInfo = await AnimeInfoAnilist(AnimeID)
 

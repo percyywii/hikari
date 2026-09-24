@@ -1,12 +1,11 @@
-"use client"
+"use client";
 
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io"
-import Checkbox from "../components/Checkbox"
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import Checkbox from "../components/Checkbox";
 import { Fragment, useState } from "react";
 
-const Genres = ({ genresitem, setGenres }) => {
-  const [isOpened, setIsOpened] = useState(true)
-  const checkBoxItem = genresitem, setCheckBoxItem = setGenres
+const Genres = ({ genresitem: checkBoxItem, setGenres: setCheckBoxItem }) => {
+  const [isOpened, setIsOpened] = useState(true);
 
   const genres = [
     "Action",
@@ -26,26 +25,39 @@ const Genres = ({ genresitem, setGenres }) => {
     "Slice of Life",
     "Sports",
     "Supernatural",
-    "Thriller"
-  ]
+    "Thriller",
+  ];
 
   return (
     <div>
-
-      <div className="flex justify-between items-center cursor-pointer border-[#1a1921] border-b-[2px] pb-2 mt-4" onClick={() => setIsOpened(prev => !prev)}>
-        <div className="text-[#efefef]">Genres</div>
-        <div>{isOpened ? <IoIosArrowUp /> : <IoIosArrowDown />}</div>
+      <div
+        className="flex justify-between items-center cursor-pointer border-b border-slate-200 dark:border-[#1E2235] pb-2 mt-4 select-none"
+        onClick={() => setIsOpened((prev) => !prev)}
+      >
+        <div className="text-slate-900 dark:text-slate-100 font-semibold font-['Outfit'] text-sm">
+          Genres
+        </div>
+        <div className="text-slate-400">
+          {isOpened ? <IoIosArrowUp /> : <IoIosArrowDown />}
+        </div>
       </div>
 
-      {isOpened ? <div className="mt-3 px-1 flex flex-col gap-2">
-
-        {genres?.map(item => <Fragment key={item}><Checkbox title={item} checkBoxItem={checkBoxItem} setCheckBoxItem={setCheckBoxItem} multipleSelect /></Fragment>)}
-
-
-      </div> : null}
-
+      {isOpened ? (
+        <div className="mt-3 px-1 flex flex-col gap-2 max-h-56 overflow-y-auto">
+          {genres?.map((item) => (
+            <Fragment key={item}>
+              <Checkbox
+                title={item}
+                checkBoxItem={checkBoxItem}
+                setCheckBoxItem={setCheckBoxItem}
+                multipleSelect
+              />
+            </Fragment>
+          ))}
+        </div>
+      ) : null}
     </div>
-  )
-}
+  );
+};
 
-export default Genres
+export default Genres;

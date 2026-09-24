@@ -29,18 +29,24 @@ const Collection = () => {
     }
   ]
   return (
-    <div className="w-full max-w-[96rem] relative mx-5">
-      <div className="flex justify-between">
-        <h1 className="text-[#f6f4f4ea] font-medium text-2xl font-['poppins'] max-[450px]:text-[1.2rem]">| Featured Collections</h1>
+    <div className="w-full max-w-[96rem] relative mx-5 transition-colors">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-6 rounded-full bg-cyan-500"></span>
+          <h2 className="text-slate-900 dark:text-slate-100 font-bold text-2xl sm:text-3xl font-['Outfit'] tracking-tight">
+            Featured Collections
+          </h2>
+        </div>
 
-        <div className="text-[#ffffffbd] flex items-center gap-1 cursor-pointer hover:text-slate-500 transition">See All <FaArrowRight /></div>
+        <div className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm font-semibold transition-colors">
+          <span>See All</span>
+          <FaArrowRight className="w-3 h-3" />
+        </div>
       </div>
 
-      <div className="mt-8 mb-52 grid grid-cols-[repeat(auto-fit,minmax(345px,1fr))] gap-3">
+      <div className="mb-32 grid grid-cols-[repeat(auto-fit,minmax(345px,1fr))] gap-4">
         {data.map((item, index) => <FeaturedCard key={index} data={item} />)}
       </div>
-
-
     </div>
   )
 }

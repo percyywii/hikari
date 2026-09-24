@@ -1,9 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { FaStar } from "react-icons/fa";
-import { motion } from "framer-motion";
-import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
+import { FiArrowRight, FiAlertCircle } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -22,100 +24,156 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const ResultItems = ({ data }) => {
-  const listItemVariants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    show: { scale: 1, opacity: 1, transition: { duration: 0.3 } },
-  };
+const ResultItem = ({ data, onClose }) => {
+  const title = data?.title?.english || data?.title?.romaji || data?.title?.userPreferred || "Anime";
+  const rating = data?.rating ? (data.rating / 10).toFixed(1) : null;
+  const image = data?.image || data?.coverImage?.large || "/placeholder.png";
 
   return (
-    <motion.div variants={listItemVariants} initial="hidden" animate="show">
-      <Link
-        className="flex gap-[6px] w-full cursor-pointer hover:bg-[#242734]"
-        href={`/watch/${data?.id}`}
-      >
-        <div className="px-2 py-[4px] flex gap-[6px] w-full">
-          <Image
-            src={data?.image}
-            alt="Image"
-            height={40}
-            width={60}
-            className="w-[54px] aspect-[9/13] object-cover cursor-pointer rounded-md"
-          />
-          <div className="flex flex-col gap-[10px]">
-            <div className="text-[#efebebf2] font-['Poppins'] font-medium text-[15px] overflow-hidden text-ellipsis line-clamp-1">
-              {data?.title?.english || data?.title?.romaji}
-            </div>
-            <div className="flex gap-[10px]">
-              <div className="border border-[#ffffff86] text-[#ffffffab] rounded-md px-1 text-[12px] flex items-center justify-center">
-                {data?.status}
-              </div>
-              <div className="flex gap-1 items-center text-[#ffffffab] text-[14px]">
-                <FaStar /> {data?.rating / 10}
-              </div>
-              <div className="text-[#ffffffab] text-[14px]">{data?.type}</div>
-            </div>
-          </div>
+    <Link
+      href={`/watch/${data?.id}`}
+      onClick={onClose}
+      className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1A1E2E] transition-colors group cursor-pointer"
+    >
+      <div className="relative w-11 h-14 shrink-0 rounded overflow-hidden bg-slate-200 dark:bg-[#161926]">
+        <Image
+          src={image}
+          alt={title}
+          fill
+          sizes="44px"
+          className="object-cover group-hover:scale-105 transition-transform duration-200"
+        />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <h4 className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 truncate transition-colors">
+          {title}
+        </h4>
+        <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+          {data?.type && (
+            <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#161926] text-slate-600 dark:text-slate-300 font-mono text-[10px]">
+              {data.type}
+            </span>
+          )}
+          {rating && (
+            <span className="flex items-center gap-1 text-amber-500 font-medium">
+              <FaStar className="w-2.5 h-2.5" />
+              {rating}
+            </span>
+          )}
+          {data?.status && (
+            <span className="truncate text-slate-500 dark:text-slate-400">
+              {data.status.replace(/_/g, " ")}
+            </span>
+          )}
         </div>
-      </Link>
-    </motion.div>
+      </div>
+    </Link>
   );
 };
 
-const SearchResults = ({ searchValue }) => {
+const SearchResults = ({ searchValue, onClose }) => {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const debouncedSearchValue = useDebounce(searchValue, 500);
-
-  const fetchSearch = useCallback(async () => {
-    if (!debouncedSearchValue) {
-      setData([]);
-      return;
-    }
-    try {
-      const anilist_consumet = new Anilist()
-
-      const dataJSON = await anilist_consumet.search(debouncedSearchValue)
-      if (dataJSON?.results?.length === 0) {
-        setData("NO_RESULT_FOUND");
-      } else {
-        setData(dataJSON);
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-  }, [debouncedSearchValue]);
+  const debouncedSearchValue = useDebounce(searchValue, 350);
 
   useEffect(() => {
-    fetchSearch();
-  }, [fetchSearch]);
+    if (!debouncedSearchValue || debouncedSearchValue.trim().length === 0) {
+      setData([]);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.2,
-      },
-    },
-  };
+    const controller = new AbortController();
+    setIsLoading(true);
+    setError(null);
+
+    fetch(`/api/anime/search?query=${encodeURIComponent(debouncedSearchValue.trim())}`, {
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Search failed with status ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        setData(json?.results || []);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") return;
+        console.error("[Hikari Search] Error:", err);
+        setError("Unable to load search results.");
+        setData([]);
+        setIsLoading(false);
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [debouncedSearchValue]);
 
   return (
     <motion.div
-      className="bg-[#231f2c] rounded-b-md w-full absolute flex flex-col gap-2 pb-1 border-x border-b border-[#ffffff24]"
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
+      initial={{ opacity: 0, y: -8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -8, scale: 0.98 }}
+      transition={{ duration: 0.15 }}
+      className="absolute top-full mt-2 right-0 w-80 sm:w-96 max-h-[460px] bg-white dark:bg-[#0E1017] border border-slate-200 dark:border-[#1E2235] rounded-xl shadow-2xl shadow-black/40 overflow-hidden flex flex-col z-50 backdrop-blur-xl"
     >
+      <div className="p-2 overflow-y-auto flex-1 divide-y divide-slate-100 dark:divide-[#161926]">
+        {/* Loading state skeleton */}
+        {isLoading && (
+          <div className="flex flex-col gap-2 p-1">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center gap-3 p-2 animate-pulse">
+                <div className="w-11 h-14 bg-slate-200 dark:bg-[#1A1D2B] rounded shrink-0"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-3.5 bg-slate-200 dark:bg-[#1A1D2B] rounded w-3/4"></div>
+                  <div className="h-2.5 bg-slate-100 dark:bg-[#141724] rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-      {Array.isArray(data?.results) &&
-        data?.results?.slice(0, 5)?.map((result) => (
-          <Fragment key={result.id}>
-            <ResultItems data={result} />
-          </Fragment>
-        ))}
-      {data === "NO_RESULT_FOUND" && <div className="text-slate-200 text-sm text-center">No result found</div>}
+        {/* Error state */}
+        {!isLoading && error && (
+          <div className="p-4 text-center text-xs text-rose-500 dark:text-rose-400 flex items-center justify-center gap-2">
+            <FiAlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && !error && data.length === 0 && debouncedSearchValue && (
+          <div className="p-6 text-center text-xs text-slate-500 dark:text-slate-400">
+            <p>No anime found for <span className="text-slate-800 dark:text-slate-200 font-medium">"{debouncedSearchValue}"</span></p>
+            <p className="text-[11px] text-slate-400 mt-1">Try another title or check your spelling</p>
+          </div>
+        )}
+
+        {/* Results List */}
+        {!isLoading &&
+          !error &&
+          data.length > 0 &&
+          data.slice(0, 6).map((item) => (
+            <ResultItem key={item.id} data={item} onClose={onClose} />
+          ))}
+      </div>
+
+      {/* Footer "View all in Catalog" button */}
+      {!isLoading && data.length > 0 && (
+        <Link
+          href={`/catalog?search=${encodeURIComponent(searchValue)}`}
+          onClick={onClose}
+          className="px-4 py-2.5 bg-slate-50 dark:bg-[#12141F] hover:bg-slate-100 dark:hover:bg-[#181C2B] border-t border-slate-200 dark:border-[#1E2235] text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 flex items-center justify-between transition-colors"
+        >
+          <span>View all results in Catalog</span>
+          <FiArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      )}
     </motion.div>
   );
 };

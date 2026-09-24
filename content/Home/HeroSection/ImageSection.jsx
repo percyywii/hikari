@@ -10,8 +10,9 @@ const ImageSection = ({ populardata }) => {
   const [isVideoReady, setIsVideoReady] = useState(false)
 
   useEffect(() => {
-    setVideoPlay(JSON.parse(localStorage.getItem("setting.Taro") || '{}')?.Preferences?.homePageTrailer || true)
-  }, [])
+    const saved = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}');
+    setVideoPlay(saved?.Preferences?.homePageTrailer ?? true);
+  }, []);
 
 
   return <>

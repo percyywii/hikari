@@ -1,26 +1,25 @@
 "use server"
-import { ANIME } from '@consumet/extensions';
+import Hianime from '@consumet/extensions/dist/providers/anime/hianime';
 import { compareTwoStrings } from 'string-similarity';
 
-const kaianime = new ANIME.AnimeKai();
+const hianime = new Hianime();
+const mappingCache = new Map();
 
 
 export async function getMappings(title) {
-  // basic checks
   if (!title) return null;
-  if (!title?.english) return null;
-  if (!title?.romaji) return null;
+  const searchTitles = [title.english, title.romaji, title.userPreferred]
+    .filter(Boolean)
+    .filter((value, index, values) => values.indexOf(value) === index);
+  if (searchTitles.length === 0) return null;
+  const cacheKey = searchTitles.join("|").toLowerCase();
+  const cached = mappingCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) return cached.id;
 
-  //** */ main logic
-  let eng = await kaianime.search(title?.english);
-  let rom = await kaianime.search(title?.romaji);
-  // console.log(eng, rom)
-  let english_search = eng?.results || [];
-  let romaji_search = rom?.results || [];
+  const searches = await Promise.allSettled(searchTitles.map((searchTitle) => hianime.search(searchTitle)));
+  const searchResults = searches.flatMap((result) => result.status === "fulfilled" ? result.value?.results || [] : []);
   // Combine both results and remove duplicates
-  const combined = [...english_search, ...romaji_search];
-
-  const uniqueResults = Array.from(new Set(combined.map(item => JSON.stringify(item))))
+  const uniqueResults = Array.from(new Set(searchResults.map(item => JSON.stringify(item))))
     .map(item => JSON.parse(item));
 
   let highestComp = 0;
@@ -31,10 +30,12 @@ export async function getMappings(title) {
     const ob_title = obj.title;
     const ob_japaneseTitle = obj.japaneseTitle;
 
-    const eng_comparision = compareTwoStrings(title?.english, ob_title)
-    const jp_comparision = compareTwoStrings(title?.romaji, ob_japaneseTitle)
+    const titleComparisons = searchTitles.flatMap((searchTitle) => [
+      compareTwoStrings(searchTitle, ob_title || ""),
+      compareTwoStrings(searchTitle, ob_japaneseTitle || ""),
+    ]);
 
-    const greatest_title = Math.max(eng_comparision, jp_comparision)
+    const greatest_title = Math.max(...titleComparisons)
 
     if (highestComp < greatest_title) {
       highestComp = greatest_title
@@ -42,5 +43,6 @@ export async function getMappings(title) {
     }
   });
 
-  return similarity_id;
+  mappingCache.set(cacheKey, { id: similarity_id || null, expiresAt: Date.now() + 10 * 60 * 1000 });
+  return similarity_id || null;
 }

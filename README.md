@@ -30,7 +30,7 @@ Experience uninterrupted, ad-free streaming with seamless progress tracking than
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file
+Copy `.env.example` to `.env.local` before starting the project. Public pages and browsing work without MongoDB or AniList OAuth credentials, but login, profiles, comments, and progress syncing require those services to be configured.
 
 ```
 # Base URL for your application
@@ -38,9 +38,7 @@ NEXT_PUBLIC_URL=http://localhost:3000
 # Replace with your website URL if deployed, otherwise keep localhost with your port.
 # Ensure there is no trailing slash ("/") at the end.
 
-# Consumet API URL
-NEXT_PUBLIC_CONSUMET_URL=
-# Add the URL for your Consumet API here. This is required for your website to function correctly.
+# Consumet is installed as an npm dependency; no separate API URL is required.
 
 # AniList API Configuration
 GRAPHQL_ENDPOINT=https://graphql.anilist.co
@@ -64,8 +62,8 @@ MONGODB_URI=
 # Provide your MongoDB connection string here.
 
 # Node Environment
-NODE_ENV=production
-# Set the environment for Node.js. Typical values are "development" or "production".
+NODE_ENV=development
+# Use "production" for a deployed build.
 ```
 
 ## 📚: Tecnologies Used
@@ -93,6 +91,8 @@ Back-End:
 
 ## Run Locally
 
+Prerequisites: Node.js 18.17 or newer and npm.
+
 Clone the project
 
 ```bash
@@ -111,11 +111,55 @@ Install dependencies
   npm install
 ```
 
+Create the local environment file
+
+```bash
+  cp .env.example .env.local
+```
+
+On Windows PowerShell, use `Copy-Item .env.example .env.local` instead. Fill in the optional AniList and MongoDB values when you need authentication and synced user data.
+
 Start the server
 
 ```bash
   npm run dev
 ```
+
+Optional source backend
+
+For a separate source service, open a second terminal and run:
+
+```bash
+  npm run source-api
+```
+
+Then set `SOURCE_API_URL=http://localhost:4000` in `.env.local` and restart Next.js. The source backend still requires at least one reachable provider to return video URLs.
+
+Deploy the source backend
+
+The source backend can run on a VPS, Railway, Render, Fly.io, or another Docker host with permitted outbound HTTPS access:
+
+```bash
+docker build -f Dockerfile.source -t taro-source-api .
+docker run --rm -p 4000:4000 --env-file .env.source taro-source-api
+```
+
+Set these values in `.env.source` on the server:
+
+```env
+SOURCE_API_PORT=4000
+PROVIDER_TIMEOUT_MS=8000
+PROVIDER_MAX_RETRIES=1
+PROVIDER_COOLDOWN_MS=30000
+ENABLE_PROVIDER_HIANIME=true
+ENABLE_PROVIDER_ANIMEPAHE=true
+ENABLE_PROVIDER_ANIMEUNITY=true
+STREAM_ALLOWED_HOSTS=your-authorized-source-domain.example
+```
+
+Point the frontend's `SOURCE_API_URL` at the deployed backend. The backend health endpoints are `/api/health` and `/api/providers/health`. A different hosting network may be required if a provider blocks the current deployment IP; the gateway does not bypass provider access controls.
+
+Open http://localhost:3000 in your browser. For a production check, run `npm run build` followed by `npm start`.
 
 ## :camera: Preview/Screenshots
 

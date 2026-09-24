@@ -1,52 +1,71 @@
-"use client"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import styles from "./header.module.css"
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import styles from "./header.module.css";
 
-const Links = ({ isMobile }) => {
-  const pathname = usePathname()
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Catalog", href: "/catalog" },
+  { label: "Trending", href: "/catalog?sort=TRENDING_DESC" },
+  { label: "Continue Watching", href: "/continue-watching" }
+];
 
+const Links = ({ isMobile, onClose }) => {
+  const pathname = usePathname();
 
-
-  const links = [
-    "Home",
-    "Catalog",
-    "News",
-    "Collection",
-    "Trending"
-  ]
+  const isActive = (href) => {
+    if (href === "/") return pathname === "/";
+    if (href.startsWith("/catalog?")) {
+      return pathname === "/catalog";
+    }
+    return pathname.startsWith(href);
+  };
 
   if (isMobile) {
     return (
-      <div className="flex flex-col h-full justify-between items-center  text-[#c4c2c7] p-2 gap-1 overflow-hidden ">
-        {links.map((link, index) => (
-          <Link
-            href={link === "Home" ? "/" : link.toLowerCase()}
-            key={link}
-            className={`${(pathname === "/" ? "Home" : pathname).includes(link) ? "text-white bg-[#242233] border-2 border-[#313e5038]" : ""}  w-full h-full text-center py-[6px] rounded-md hover:bg-[#242233] border-2 border-transparent hover:border-[#313e5038] relative ${styles.animate_ltr}`}
-            style={{ animationDelay: `${index * 0.13}s` }}
-
-          >
-            {link}
-          </Link>
-        ))}
+      <div className="flex flex-col h-full justify-start items-stretch p-2 gap-1 overflow-hidden">
+        {NAV_LINKS.map((link, index) => {
+          const active = isActive(link.href);
+          return (
+            <Link
+              href={link.href}
+              key={link.label}
+              onClick={() => onClose && onClose()}
+              className={`${
+                active
+                  ? "text-cyan-500 dark:text-cyan-400 bg-cyan-500/10 font-semibold border-cyan-500/30"
+                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 border-transparent"
+              } w-full text-left px-3 py-2 rounded-lg text-sm transition-colors border relative ${styles.animate_ltr}`}
+              style={{ animationDelay: `${index * 0.08}s` }}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
       </div>
-    )
+    );
   }
 
   return (
-    <div className="flex mt-[8px] text-[#c4c2c7] max-[990px]:hidden">
-      {links.map((link, index) => (
-        <Link
-          href={link === "Home" ? "/" : link === "Trending" ? "/catalog?sort=TRENDING_DESC" : `/${link.toLowerCase()}`}
-          key={link}
-          className={`${index === 0 ? "ml-6" : "ml-4"} ${(pathname === "/" ? "home" : pathname).includes(link.toLowerCase()) ? "text-white" : ""}`}
-        >
-          {link}
-        </Link>
-      ))}
+    <div className="flex items-center gap-1 mt-0.5 max-[990px]:hidden">
+      {NAV_LINKS.map((link, index) => {
+        const active = isActive(link.href);
+        return (
+          <Link
+            href={link.href}
+            key={link.label}
+            className={`${index === 0 ? "ml-4" : "ml-1"} px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              active
+                ? "text-cyan-600 dark:text-cyan-400 font-semibold bg-cyan-500/10"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+            }`}
+          >
+            {link.label}
+          </Link>
+        );
+      })}
     </div>
-  )
-}
+  );
+};
 
 export default Links;

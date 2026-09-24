@@ -1,72 +1,216 @@
-import styles from "./HeroSection.module.css"
-import { FaCirclePlay } from "react-icons/fa6";
+"use client";
+
+import { useState, useEffect, useMemo, useCallback } from "react";
+import styles from "./HeroSection.module.css";
+import { FaCirclePlay, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import Button from "@/components/ui/Button";
 import ImageSection from "./ImageSection";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const Herosection = ({ data }) => {
+  const slides = useMemo(() => {
+    if (!data || !Array.isArray(data) || data.length === 0) return [];
+    const valid = data.filter(
+      (item) => item.bannerImage && item.id !== 21 && item.status !== "NOT_YET_RELEASED"
+    );
+    return valid.length > 0 ? valid.slice(0, 6) : data.slice(0, 6);
+  }, [data]);
 
-  const populardata = (() => {
-    if (data && Array.isArray(data) && data.length > 0) {
-      const filteredData = data.filter(item => item.trailer && item.trailer.id && item.id !== 21 && item.bannerImage !== null && item.status !== 'NOT_YET_RELEASED');
-      const randomIndex = Math.floor(Math.random() * filteredData.length);
-      return filteredData[randomIndex]
-    }
-  })()
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
+  const totalSlides = slides.length;
+  const currentAnime = slides[currentIndex] || null;
 
+  // Auto-advance slides every 6 seconds if not paused
+  useEffect(() => {
+    if (totalSlides <= 1 || isPaused) return;
 
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % totalSlides);
+    }, 6000);
+
+    return () => clearInterval(timer);
+  }, [totalSlides, isPaused]);
+
+  const nextSlide = useCallback(() => {
+    if (totalSlides <= 1) return;
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
+  }, [totalSlides]);
+
+  const prevSlide = useCallback(() => {
+    if (totalSlides <= 1) return;
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  }, [totalSlides]);
+
+  const title =
+    currentAnime?.title?.english ||
+    currentAnime?.title?.romaji ||
+    currentAnime?.title?.userPreferred ||
+    "Featured Anime";
+
+  const cleanDescription = currentAnime?.description
+    ? currentAnime.description.replace(/<[^>]*>/g, "")
+    : "Discover thrilling anime adventures, stream high quality episodes, and track your watch journey on Hikari.";
+
+  const monthIdx = (currentAnime?.startDate?.month || 1) - 1;
+  const monthName = MONTHS[monthIdx >= 0 && monthIdx < 12 ? monthIdx : 0];
+  const dateStr = currentAnime?.startDate?.year
+    ? `${monthName} ${currentAnime?.startDate?.day || 1}, ${currentAnime?.startDate?.year}`
+    : null;
 
   return (
-    <div className={`relative w-full ${styles.smoothImageBlending}`}>
-      <div>
+    <div
+      className={`relative w-full overflow-hidden select-none ${styles.smoothImageBlending}`}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Background Visual Layer with Transition */}
+      <AnimatePresence mode="wait">
+        {currentAnime ? (
+          <motion.div
+            key={currentAnime.id}
+            initial={{ opacity: 0, scale: 1.02 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full"
+          >
+            <ImageSection populardata={currentAnime} />
+          </motion.div>
+        ) : (
+          <div className={`${styles.smoothTransform} relative aspect-[16/9] max-h-[800px] min-h-[460px] w-full bg-slate-100 dark:bg-[#090A0F]`}></div>
+        )}
+      </AnimatePresence>
 
-        {populardata ?
-          <ImageSection populardata={populardata} />
-          :
-          <div className={`${styles.smoothTransform} relative aspect-[16/9] object-cover max-h-[800px] min-h-[460px] w-full`}></div>
-        }
-      </div>
+      {/* Floating Info Content Overlay */}
+      {currentAnime && (
+        <div className="absolute top-[28%] sm:top-[34%] left-4 sm:left-12 lg:left-24 z-10 max-w-2xl pr-4">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentAnime.id}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
+            >
+              {/* Apple-Style Pill Spotlight Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 dark:bg-black/60 border border-slate-300 dark:border-white/15 text-cyan-600 dark:text-cyan-300 text-xs sm:text-sm font-semibold mb-3 backdrop-blur-md shadow-sm">
+                <span className="h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></span>
+                <span>#{currentIndex + 1} Spotlight Anime</span>
+              </div>
 
-      {populardata ?
-        <div className={`absolute top-[35%] left-32 z-10 max-[1320px]:left-[2%]`}>
-          <h3 className="text-[1.3rem] my-2 text-[#ed2672] font-medium max-[500px]:text-[18px]">#{data?.indexOf(populardata) + 1} Trending</h3>
-          <h1 className="text-6xl text-white font-medium w-full max-w-[60rem] tracking-normal overflow-hidden text-ellipsis line-clamp-1 font-['Outfit'] max-[794px]:text-4xl">{populardata?.title?.english || populardata?.title?.romaji}</h1>
+              {/* Title with Perfect Dual-Theme Contrast */}
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl text-slate-900 dark:text-white font-extrabold tracking-tight line-clamp-2 leading-tight drop-shadow-md">
+                {title}
+              </h1>
 
-          <div className="flex items-center gap-4 max-[500px]:text-[14px]">
-            <span className='flex items-center text-white my-2'>
-              <svg xmlns="http://www.w3.org/2000/svg" className='w-5 h-5 mr-1 max-[500px]:w-4' viewBox="0 0 48 48"><defs><mask id="ipSPlay0"><g fill="none" strokeLinejoin="round" strokeWidth="4"><path fill="#fff" stroke="#fff" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4S4 12.954 4 24s8.954 20 20 20Z" /><path fill="#000" stroke="#000" d="M20 24v-6.928l6 3.464L32 24l-6 3.464l-6 3.464z" /></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipSPlay0)" /></svg>
-              {populardata?.format}
-            </span>
+              {/* Meta Tags */}
+              <div className="flex flex-wrap items-center gap-2.5 my-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                {currentAnime?.format && (
+                  <span className="px-2 py-0.5 rounded-md bg-black/10 dark:bg-black/60 border border-slate-300 dark:border-white/10 uppercase tracking-wider font-mono text-[11px] font-medium">
+                    {currentAnime.format}
+                  </span>
+                )}
 
-            <span className={`${populardata?.status === 'RELEASING' ? "text-[#2fc867]" : "text-white"}`}>{populardata?.status}</span>
+                {currentAnime?.status && (
+                  <span
+                    className={`font-semibold px-2 py-0.5 rounded-md text-[11px] ${
+                      currentAnime.status === "RELEASING"
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                        : "bg-black/10 dark:bg-black/60 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/10"
+                    }`}
+                  >
+                    {currentAnime.status === "RELEASING" ? "● Airing" : currentAnime.status}
+                  </span>
+                )}
 
-            <span className='flex items-center text-white'>
-              <svg className="w-5 h-5 mr-1 max-[500px]:w-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14c.6 0 1-.4 1-1V7c0-.6-.4-1-1-1H5a1 1 0 0 0-1 1v12c0 .6.4 1 1 1Z" />
-              </svg>
-              {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"][populardata?.startDate?.month]} {populardata?.startDate?.day}, {populardata?.startDate?.year}
-            </span>
+                {dateStr && (
+                  <span className="text-slate-600 dark:text-slate-400 hidden sm:inline-block font-medium">
+                    {dateStr}
+                  </span>
+                )}
 
-            <span className="flex items-center text-white">
-              <svg viewBox="0 0 32 32" className="w-5 h-5 mr-1 max-[500px]:w-4" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M4.6661 6.66699C4.29791 6.66699 3.99943 6.96547 3.99943 7.33366V24.667C3.99943 25.0352 4.29791 25.3337 4.6661 25.3337H27.3328C27.701 25.3337 27.9994 25.0352 27.9994 24.667V7.33366C27.9994 6.96547 27.701 6.66699 27.3328 6.66699H4.6661ZM8.66667 21.3333C8.29848 21.3333 8 21.0349 8 20.6667V11.3333C8 10.9651 8.29848 10.6667 8.66667 10.6667H14C14.3682 10.6667 14.6667 10.9651 14.6667 11.3333V12.6667C14.6667 13.0349 14.3682 13.3333 14 13.3333H10.8C10.7264 13.3333 10.6667 13.393 10.6667 13.4667V18.5333C10.6667 18.607 10.7264 18.6667 10.8 18.6667H14C14.3682 18.6667 14.6667 18.9651 14.6667 19.3333V20.6667C14.6667 21.0349 14.3682 21.3333 14 21.3333H8.66667ZM18 21.3333C17.6318 21.3333 17.3333 21.0349 17.3333 20.6667V11.3333C17.3333 10.9651 17.6318 10.6667 18 10.6667H23.3333C23.7015 10.6667 24 10.9651 24 11.3333V12.6667C24 13.0349 23.7015 13.3333 23.3333 13.3333H20.1333C20.0597 13.3333 20 13.393 20 13.4667V18.5333C20 18.607 20.0597 18.6667 20.1333 18.6667H23.3333C23.7015 18.6667 24 18.9651 24 19.3333V20.6667C24 21.0349 23.7015 21.3333 23.3333 21.3333H18Z" fill="currentColor"></path></svg>
-              {populardata?.nextAiringEpisode?.episode - 1 || populardata?.episodes}
-            </span>
-          </div>
+                {(currentAnime?.nextAiringEpisode?.episode || currentAnime?.episodes) && (
+                  <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20 text-xs font-semibold">
+                    EP {currentAnime.nextAiringEpisode?.episode ? currentAnime.nextAiringEpisode.episode - 1 : currentAnime.episodes}
+                  </span>
+                )}
+              </div>
 
-          <div>
+              {/* Synopsis */}
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 line-clamp-3 leading-relaxed mb-6 font-normal max-w-xl">
+                {cleanDescription}
+              </p>
 
-          </div>
+              {/* Call to Actions */}
+              <div className="flex items-center gap-3">
+                <Button
+                  text="Watch Now"
+                  icon={<FaCirclePlay className="w-4 h-4" />}
+                  animeID={currentAnime.id}
+                />
+                <Link
+                  href={`/catalog?search=${encodeURIComponent(title)}`}
+                  className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white/60 dark:bg-black/40 hover:bg-white dark:hover:bg-black/70 border border-slate-300 dark:border-white/20 text-slate-800 dark:text-slate-200 backdrop-blur-md transition-all shadow-sm"
+                >
+                  Explore Catalog
+                </Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      )}
 
-          <h2 className="text-sm text-white w-full max-w-[60rem] tracking-normal overflow-hidden text-ellipsis line-clamp-2 font-['poppins'] mt-3 mb-4 max-[794px]:text-[13px]">{populardata?.description.replace(/<[^>]*>/g, '')}</h2>
-          <Button text="Watch now" icon={<FaCirclePlay />} animeID={populardata?.id} />
-        </div> : null
-      }
+      {/* Apple-Grade Navigation Arrows */}
+      {totalSlides > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={prevSlide}
+            aria-label="Previous Slide"
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/40 dark:bg-black/40 hover:bg-white/80 dark:hover:bg-black/70 border border-slate-200 dark:border-white/20 text-slate-800 dark:text-white flex items-center justify-center backdrop-blur-md shadow-lg transition-all scale-100 hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <FaChevronLeft className="w-3.5 h-3.5 -ml-0.5" />
+          </button>
 
+          <button
+            type="button"
+            onClick={nextSlide}
+            aria-label="Next Slide"
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/40 dark:bg-black/40 hover:bg-white/80 dark:hover:bg-black/70 border border-slate-200 dark:border-white/20 text-slate-800 dark:text-white flex items-center justify-center backdrop-blur-md shadow-lg transition-all scale-100 hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <FaChevronRight className="w-3.5 h-3.5 ml-0.5" />
+          </button>
+        </>
+      )}
 
+      {/* Apple-Grade Slide Indicator Pills (Bottom Center) */}
+      {totalSlides > 1 && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 p-1.5 rounded-full bg-white/30 dark:bg-black/40 border border-slate-200/60 dark:border-white/10 backdrop-blur-lg shadow-lg">
+          {slides.map((slide, index) => {
+            const isActive = index === currentIndex;
+            return (
+              <button
+                key={slide.id || index}
+                type="button"
+                onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  isActive
+                    ? "w-7 bg-cyan-500 shadow-sm shadow-cyan-500/50"
+                    : "w-2 bg-slate-400/60 dark:bg-white/40 hover:bg-slate-600 dark:hover:bg-white/70"
+                }`}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
-    </div >
-  )
-}
-
-export default Herosection
+export default Herosection;

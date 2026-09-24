@@ -22,9 +22,9 @@ export function AuthProvider({ children, session }) {
   return (
     <SessionProvider session={session}>
       <ProgressProvider
-        height="3px"
-        color="#e26bbd"
-        options={{ showSpinner: true }}
+        height="2.5px"
+        color="#06b6d4"
+        options={{ showSpinner: false }}
         shallowRouting
       >
         {children}

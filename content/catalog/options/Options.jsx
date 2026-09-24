@@ -42,7 +42,7 @@ const Options = () => {
 
 
   return (
-    <div className="py-4 px-3 bg-[#242735] border-[1px] border-[#39374b] w-full h-max max-w-[20rem] text-white rounded-sm max-[780px]:max-w-full">
+    <div className="p-4 bg-white dark:bg-[#10121A] border border-slate-200 dark:border-[#1E2235] w-full h-max max-w-[20rem] text-slate-800 dark:text-slate-200 rounded-2xl shadow-xl max-[780px]:max-w-full transition-colors">
       <Search search={search} setSearch={setSearch} pathname={pathname} />
       <Types type={type} setType={setType} />
       <Season season={season} setSeason={setSeason} />
@@ -50,12 +50,15 @@ const Options = () => {
       <Genres genresitem={genres} setGenres={setGenres} />
       <Year />
 
-      <div
-        className="bg-[#1b1a23] text-center py-2 rounded-md mt-6 cursor-pointer font-['poppins'] hover:bg-[#22202d] transition-all"
+      <button
+        type="button"
+        className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-center py-2.5 rounded-xl mt-6 cursor-pointer font-semibold text-sm shadow-md transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
         onClick={handleSubmit}
-      >Filter</div>
+      >
+        Apply Filters
+      </button>
     </div>
-  )
+  );
 }
 
 export default Options

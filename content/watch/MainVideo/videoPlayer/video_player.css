@@ -1,5 +1,6 @@
 .art-video-player {
-  font-family: "Rubik", sans-serif !important;
+  font-family: "Outfit", sans-serif !important;
+  --art-theme: #22d3ee;
 }
 
 .art-progress-tip {
@@ -25,7 +26,7 @@ body .art-video-player.art-backdrop .art-selector-list {
 }
 
 .art-selector-item {
-  color: #ffffffd6;
+  color: #f8fafc;
   font-size: 15px;
   font-family: "Poppins";
 }
@@ -41,6 +42,22 @@ body .art-video-player.art-backdrop .art-settings {
   border-radius: 11px !important;
   font-family: "poppins", sans-serif;
   height: max-content !important;
+}
+
+html.light body .art-video-player.art-backdrop .art-selector-list,
+html.light body .art-video-player.art-backdrop .art-settings {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+}
+
+html.light .art-selector-item {
+  color: #1E293B;
+}
+
+html.light .art-selector-item:hover {
+  background: #E0F2FE;
+  color: #0369A1 !important;
 }
 
 .art-setting-item {
@@ -66,4 +83,20 @@ body .art-video-player.art-backdrop .art-contextmenus {
   font-family: "poppins", sans-serif;
   border-radius: 5px;
 }
+
+/* Ensure video element is always rendered and visible */
+.art-video-player .art-video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background-color: transparent !important;
+}
+
+/* When player is playing, suppress poster overlay completely */
+.art-video-player.art-state-playing .art-poster {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 

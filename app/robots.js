@@ -1,15 +1,15 @@
 export default function robots() {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hikari.app';
   return {
     rules: {
       userAgent: '*',
       allow: '/',
       disallow: [
-        '/watch/',
-        '/catalog',
         '/profile',
+        '/settings',
         '/api/'
       ],
     },
-    sitemap: 'https://taro-anime.vercel.app/sitemap.xml',
-  }
+    sitemap: `${baseUrl}/sitemap.xml`,
+  };
 }

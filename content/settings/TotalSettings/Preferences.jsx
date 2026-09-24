@@ -23,19 +23,19 @@ const Preferences = () => {
 
 
   useEffect(() => {
-    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Taro") || '{}')
+    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
 
-    if (jsonifiedLocalsotrage?.appearence) {
-      if (jsonifiedLocalsotrage?.Preferences?.homePageTrailer) setHomePageTrailer(jsonifiedLocalsotrage?.Preferences?.homePageTrailer === true || false)
-      if (jsonifiedLocalsotrage?.Preferences?.upscaledBanner) setUpscaledBanner(jsonifiedLocalsotrage?.Preferences?.upscaledBanner === true || false)
-      if (jsonifiedLocalsotrage?.Preferences?.trendingCardVideo) setTrendingCardVideo(jsonifiedLocalsotrage?.Preferences?.trendingCardVideo === true || false)
+    if (jsonifiedLocalsotrage?.appearence || jsonifiedLocalsotrage?.Preferences) {
+      if (jsonifiedLocalsotrage?.Preferences?.homePageTrailer !== undefined) setHomePageTrailer(Boolean(jsonifiedLocalsotrage.Preferences.homePageTrailer))
+      if (jsonifiedLocalsotrage?.Preferences?.upscaledBanner !== undefined) setUpscaledBanner(Boolean(jsonifiedLocalsotrage.Preferences.upscaledBanner))
+      if (jsonifiedLocalsotrage?.Preferences?.trendingCardVideo !== undefined) setTrendingCardVideo(Boolean(jsonifiedLocalsotrage.Preferences.trendingCardVideo))
     }
   }, [])
 
   useEffect(() => {
-    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Taro") || '{}')
+    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
 
-    localStorage.setItem("setting.Taro", JSON.stringify({
+    localStorage.setItem("setting.Tenro", JSON.stringify({
       ...jsonifiedLocalsotrage, Preferences: {
         homePageTrailer,
         upscaledBanner,

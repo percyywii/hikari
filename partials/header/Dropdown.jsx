@@ -1,53 +1,93 @@
+"use client";
+
 import { FaUser } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import { RxExit } from "react-icons/rx";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { signIn, signOut } from 'next-auth/react';
+import { signIn, signOut } from "next-auth/react";
 
-const Dropdown = ({ data, isLoggedIn }) => {
+const Dropdown = ({ data, isLoggedIn, onClose }) => {
   return (
     <motion.div
-      className="bg-[#17151e6f] backdrop-blur-2xl border-2 border-[#4844606e] absolute top-14 right-0 rounded-2xl overflow-hidden min-w-52 px-2 pt-4 pb-2 text-[14px]"
-      style={{ transformOrigin: 'top right' }}
-      initial={{ scale: "0.6" }}
-      animate={{ scale: 1 }}
+      className="bg-white/95 dark:bg-[#10121A]/95 backdrop-blur-2xl border border-slate-200 dark:border-[#1E2235] shadow-2xl shadow-black/20 absolute top-12 right-0 rounded-2xl min-w-56 p-2 text-xs sm:text-sm z-50 text-slate-800 dark:text-slate-200 divide-y divide-slate-100 dark:divide-[#1E2235]/60"
+      style={{ transformOrigin: "top right" }}
+      initial={{ opacity: 0, scale: 0.95, y: -4 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, y: -4 }}
+      transition={{ duration: 0.15 }}
     >
-      {
-        isLoggedIn ? <>
-          <div className="flex flex-col font-semibold ml-3 text-white">Signed in as <span>{data?.user?.name}</span></div>
+      {isLoggedIn ? (
+        <>
+          <div className="px-3 py-2.5">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-medium">
+              Signed in as
+            </p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate mt-0.5">
+              {data?.user?.name || "Anime Fan"}
+            </p>
+          </div>
+
+          <div className="py-1">
+            <Link
+              href="/profile"
+              onClick={onClose}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-[#1A1D2B] text-slate-700 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+            >
+              <FaUser className="w-3.5 h-3.5" />
+              <span>Profile</span>
+            </Link>
+
+            <Link
+              href="/settings"
+              onClick={onClose}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-[#1A1D2B] text-slate-700 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+            >
+              <IoMdSettings className="w-4 h-4" />
+              <span>Settings</span>
+            </Link>
+          </div>
+
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                if (onClose) onClose();
+                signOut({ callbackUrl: "/" });
+              }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer text-left"
+            >
+              <RxExit className="w-3.5 h-3.5" />
+              <span>Log Out</span>
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="py-1">
+          <button
+            type="button"
+            onClick={() => {
+              if (onClose) onClose();
+              signIn("AniListProvider");
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-medium transition-colors cursor-pointer text-left"
+          >
+            <RxExit className="w-3.5 h-3.5" />
+            <span>Sign In with AniList</span>
+          </button>
 
           <Link
-            className="flex items-center mt-2 gap-2 hover:bg-[#262232] rounded-xl px-2 py-2 text-slate-200 cursor-pointer"
-            href={"/profile"}
+            href="/settings"
+            onClick={onClose}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-[#1A1D2B] text-slate-700 dark:text-slate-200 transition-colors"
           >
-            <div><FaUser /></div>
-            <div>Profile</div>
+            <IoMdSettings className="w-4 h-4" />
+            <span>Settings</span>
           </Link>
-
-          <Link href={"/settings"} className="flex items-center gap-2 hover:bg-[#231f2f] rounded-xl px-2 py-2 text-slate-200 cursor-pointer">
-            <div><IoMdSettings /></div>
-            <div>Settings</div>
-          </Link>
-          <div className="flex items-center gap-2 hover:bg-[#351f23] rounded-xl px-2 py-2 text-slate-200 cursor-pointer" onClick={() => signOut('AniListProvider')}>
-            <div><RxExit /></div>
-            <div>Log Out</div>
-          </div>
-        </> :
-          <>
-            <div className="flex items-center gap-2 hover:bg-[#262232] rounded-xl px-2 py-2 mb-2 text-slate-200 cursor-pointer" onClick={() => signIn('AniListProvider')}>
-              <div><RxExit /></div>
-              <div>Sign in</div>
-            </div>
-            <Link href={"/settings"} className="flex items-center gap-2 hover:bg-[#231f2f] rounded-xl px-2 py-2 text-slate-200 cursor-pointer">
-              <div><IoMdSettings /></div>
-              <div>Settings</div>
-            </Link>
-          </>
-      }
-
+        </div>
+      )}
     </motion.div>
-  )
-}
+  );
+};
 
-export default Dropdown
+export default Dropdown;

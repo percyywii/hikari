@@ -7,33 +7,58 @@ const HLSPlayer = ({ url, startAtSeconds, controls, ondataloaded, speed }) => {
   const hlsRef = useRef(null);
 
   useEffect(() => {
-    if (Hls.isSupported() && videoRef.current) {
-      const hls = new Hls();
+    const video = videoRef.current;
+    if (!video || !url) return undefined;
+
+    let disposed = false;
+    const seekToStart = () => {
+      if (Number.isFinite(startAtSeconds) && startAtSeconds > 0 && video.duration) {
+        video.currentTime = Math.min(startAtSeconds, Math.max(video.duration - 1, 0));
+      }
+    };
+    const startPlayback = () => {
+      if (disposed) return;
+      seekToStart();
+      video.play().catch(() => {
+        // Browsers may require a user gesture when controls are enabled.
+      });
+    };
+
+    video.addEventListener('loadedmetadata', startPlayback);
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({
+        enableWorker: true,
+        capLevelToPlayerSize: true,
+        startLevel: -1,
+        maxBufferLength: 30,
+        backBufferLength: 30,
+      });
       hls.loadSource(url);
-      hls.attachMedia(videoRef.current);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        if (startAtSeconds) {
-          videoRef.current.currentTime = startAtSeconds;
-        }
-        videoRef.current.play();
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, startPlayback);
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (!data?.fatal || disposed) return;
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
+        if (data.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
       });
 
       hlsRef.current = hls;
-    } else if (videoRef.current && videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // For browsers that support HLS natively
-      videoRef.current.src = url;
-      videoRef.current.addEventListener('loadedmetadata', () => {
-        if (startAtSeconds) {
-          videoRef.current.currentTime = startAtSeconds;
-        }
-        videoRef.current.play();
-      });
+      video.src = url;
     }
 
     return () => {
+      disposed = true;
+      video.removeEventListener('loadedmetadata', startPlayback);
       if (hlsRef.current) {
         hlsRef.current.destroy();
+        hlsRef.current = null;
       }
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
     };
   }, [url, startAtSeconds]);
 
@@ -44,7 +69,7 @@ const HLSPlayer = ({ url, startAtSeconds, controls, ondataloaded, speed }) => {
       autoPlay={!controls}
       muted={!controls}
       preload={!controls ? "auto" : "metadata"}
-      onCanPlay={() => ondataloaded(true)}
+      onCanPlay={() => ondataloaded?.(true)}
       onLoadStart={(event) => {
         event.currentTarget.playbackRate = speed || 1;
       }}

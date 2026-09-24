@@ -2,18 +2,6 @@
   position: relative !important;
 }
 
-/* .smoothImageBlending::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  max-width: 80rem;
-  height: 100%;
-  left: 0;
-  top: 0;
-  z-index: 1;
-  background: linear-gradient(90deg, #12111a, #12111ac7, #12111a70, #0000);
-} */
-
 .smoothImageBlending::before {
   content: "";
   position: absolute;
@@ -21,12 +9,52 @@
   height: 100%;
   left: 0;
   bottom: 0;
-  z-index: 1;
+  z-index: 2;
   background: linear-gradient(
     90deg,
-    #12111a,
-    #12111aa1,
-    #12111a00,
-    transparent
+    #090A0F 0%,
+    rgba(9, 10, 15, 0.94) 25%,
+    rgba(9, 10, 15, 0.65) 55%,
+    transparent 85%
+  );
+  pointer-events: none;
+  transition: background 0.3s ease;
+}
+
+.smoothImageBlending::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to top,
+    #090A0F 0%,
+    rgba(9, 10, 15, 0.85) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  transition: background 0.3s ease;
+}
+
+/* Apple-Grade Light Theme Gradient Blend */
+:global(html.light) .smoothImageBlending::before {
+  background: linear-gradient(
+    90deg,
+    #F5F5F7 0%,
+    rgba(245, 245, 247, 0.96) 28%,
+    rgba(245, 245, 247, 0.72) 58%,
+    transparent 88%
+  );
+}
+
+:global(html.light) .smoothImageBlending::after {
+  background: linear-gradient(
+    to top,
+    #F5F5F7 0%,
+    rgba(245, 245, 247, 0.88) 55%,
+    transparent 100%
   );
 }

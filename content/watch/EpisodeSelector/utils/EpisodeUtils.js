@@ -1,6 +1,9 @@
 export const filterEpisodes = (episodes, isSubSelected, loading) => {
   if (loading) return [];
-  return episodes.filter(data => (isSubSelected ? data?.isSubbed : data?.isDubbed));
+  return episodes.filter(
+    (data) =>
+      data?.playable !== false && (isSubSelected ? data?.isSubbed !== false : data?.isDubbed !== false)
+  );
 };
 
 export const chunkEpisodes = (data, chunkSize) => {

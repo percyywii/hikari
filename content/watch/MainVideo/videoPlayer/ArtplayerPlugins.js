@@ -1,41 +1,45 @@
-import artplayerPluginHlsQuality from "artplayer-plugin-hls-quality";
-import artplayerPluginChapter from "artplayer-plugin-chapter";
+import safeHlsQualityPlugin from "@/lib/plugins/safeHlsQualityPlugin";
+import safeChapterPlugin from "@/lib/plugins/safeChapterPlugin";
 
 export const ArtplayerPlugins = (watchInfo) => {
+  const intro = watchInfo?.watchData?.intro;
+  const outro = watchInfo?.watchData?.outro;
+
+  const chapters = [];
+  if (
+    intro?.start != null &&
+    intro?.end != null &&
+    intro.start !== intro.end
+  ) {
+    chapters.push({
+      start: intro.start,
+      end: intro.end,
+      title: "Opening",
+    });
+  }
+
+  if (
+    outro?.start != null &&
+    outro?.end != null &&
+    outro.start !== outro.end
+  ) {
+    chapters.push({
+      start: outro.start,
+      end: outro.end,
+      title: "Ending",
+    });
+  }
+
   return [
-    artplayerPluginHlsQuality({
+    safeHlsQualityPlugin({
       control: true,
       setting: true,
       getResolution: (level) => `${level.height}P`,
       title: "Quality",
       auto: "Auto",
     }),
-
-    ...(watchInfo?.watchData?.intro?.start !== 0 || watchInfo?.watchData?.outro?.start !== 0
-      ? [
-        artplayerPluginChapter({
-          chapters: [
-            watchInfo?.watchData?.intro?.start != null &&
-              watchInfo?.watchData?.intro?.end != null &&
-              watchInfo.watchData.intro.start !== watchInfo.watchData.intro.end
-              ? {
-                start: watchInfo.watchData.intro.start,
-                end: watchInfo.watchData.intro.end,
-                title: "opening",
-              }
-              : null,
-
-            watchInfo?.watchData?.outro?.start != null &&
-              watchInfo?.watchData?.outro?.end != null
-              ? {
-                start: watchInfo.watchData.outro.start,
-                end: watchInfo.watchData.outro.end,
-                title: "ending",
-              }
-              : null,
-          ].filter(Boolean),
-        }),
-      ]
-      : []),
+    ...(chapters.length ? [safeChapterPlugin({ chapters })] : []),
   ];
 };
+
+export default ArtplayerPlugins;

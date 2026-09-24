@@ -15,8 +15,9 @@ const TrendingCard = ({ info }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
-    setVideoPlay(JSON.parse(localStorage.getItem("setting.Taro") || '{}')?.Preferences?.trendingCardVideo || false)
-  }, [])
+    const saved = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}');
+    setVideoPlay(Boolean(saved?.Preferences?.trendingCardVideo));
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -62,7 +63,7 @@ const TrendingCard = ({ info }) => {
     if (imageHovered && !trailer && !isTrailerFetched) {
       fetch_and_set_data(info?.trailer?.id || null)
     }
-  }, [imageHovered])
+  }, [imageHovered, info?.trailer?.id, isTrailerFetched, trailer])
 
   const HoverTime = 1000;
   let hoverTimer = null;
@@ -91,7 +92,7 @@ const TrendingCard = ({ info }) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      {imageHovered ? <video
+      {imageHovered && trailer ? <video
         ref={videoRef}
         src={trailer}
         className="object-cover w-full h-full rounded-2xl hover:cursor-pointer"
@@ -110,22 +111,33 @@ const TrendingCard = ({ info }) => {
       />}
 
 
-      <div className={`${styles.rating} absolute top-0 left-0 bg-[#21212c] w-[60%] rounded-br-lg rounded-tl-md flex items-center justify-center gap-2 text-white h-10`}>
-        <FaStar />
-        <span>{info?.averageScore / 10}</span>
-      </div>
-
-      <div className="absolute bottom-0 left-0 pl-[8px] pb-2 z-10 opacity-100 group-hover:opacity-0 transition">
-        <h1 className="text-[#ffffffd1] font-medium text-md font-['poppins'] w-[186px] line-clamp-1 text-ellipsis overflow-hidden cursor-pointer">{info?.title?.english || info?.title?.romaji} </h1>
-        <span className="text-[#ffffffb0] text-sm">{info?.seasonYear}, {info?.genres[0]}</span>
-      </div>
-
-      {(imageHovered && videoRef && videoRef?.current) && <div className="absolute bottom-0 left-0 w-full duration-100 h-1 z-50">
-        <div className="w-0 rounded-md h-full bg-[#4a476e] duration-100" style={{ width: `${currentTime * 100 / videoRef.current.duration}%` }}>
-
+      {/* Apple-Grade Frosted Glass Rating Badge */}
+      {info?.averageScore && (
+        <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-full flex items-center gap-1.5 text-amber-400 text-xs font-semibold shadow-md z-10">
+          <FaStar className="w-3 h-3 text-amber-400" />
+          <span>{(info.averageScore / 10).toFixed(1)}</span>
         </div>
-      </div>}
+      )}
 
+      {/* Protective Dark Gradient Bottom Overlay with Legible Typography */}
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-3 pt-10 z-10 opacity-100 group-hover:opacity-90 transition-opacity">
+        <h3 className="text-white font-semibold text-sm line-clamp-1 font-['Outfit'] drop-shadow">
+          {info?.title?.english || info?.title?.romaji}
+        </h3>
+        <p className="text-slate-300 text-xs mt-0.5 drop-shadow">
+          {info?.seasonYear ? `${info.seasonYear}` : ""}
+          {info?.genres?.[0] ? ` • ${info.genres[0]}` : ""}
+        </p>
+      </div>
+
+      {imageHovered && videoRef && videoRef?.current && (
+        <div className="absolute bottom-0 left-0 w-full duration-100 h-1 z-50">
+          <div
+            className="w-0 rounded-md h-full bg-cyan-500 duration-100"
+            style={{ width: `${(currentTime * 100) / videoRef.current.duration}%` }}
+          ></div>
+        </div>
+      )}
     </Link>
   )
 }

@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.env*
+README.md
+public
+app
+actions
+components
+content
+context
+hook
+lib
+partials
+utils
+mongodb

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export async function GET(req) {
   const anilistId = req.nextUrl.searchParams.get("id") || "151807";
@@ -21,6 +21,7 @@ export async function GET(req) {
     return NextResponse.json({
       status: res.status,
       ok: res.ok,
+      runtime: "edge",
       headers: Object.fromEntries(res.headers.entries()),
       bodyPreview: text.slice(0, 500),
     });
@@ -29,6 +30,7 @@ export async function GET(req) {
       error: err.message,
       name: err.name,
       code: err.code,
+      runtime: "edge",
     });
   }
 }

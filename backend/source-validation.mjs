@@ -50,13 +50,17 @@ export async function validateSources(sources, options = {}) {
         });
         const contentType = response.headers.get("content-type") || "";
         const body = (await response.text()).slice(0, 512).toLowerCase();
+        const isHtml = body.includes("<html") || body.includes("<!doctype html");
         const isPlaylist =
           source.type === "hls" &&
           (contentType.includes("mpegurl") ||
             body.includes("#extm3u") ||
+            body.includes("em3u8") ||
             Boolean(source.pk || source.headers?.pk));
         const isVideo = source.type === "mp4" && (contentType.startsWith("video/") || response.status === 206);
-        if (!response.ok || (!isPlaylist && !isVideo) || (body.includes("<html") && !body.includes("#extm3u"))) {
+        const isLikelyValidMedia = response.ok && !isHtml && (isPlaylist || isVideo || source.url.includes(".m3u8"));
+
+        if (!response.ok || !isLikelyValidMedia) {
           failures.push({ url: source.url, reason: `Invalid source response (${response.status})` });
           continue;
         }

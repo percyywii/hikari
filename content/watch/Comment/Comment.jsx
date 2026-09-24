@@ -371,7 +371,7 @@ const Comments = ({ AnimeID, title }) => {
             <DiscussionEmbed
               shortname={process.env.NEXT_PUBLIC_DISQUS_SHORTNAME || "taro-6"}
               config={{
-                url: `${process.env.NEXT_PUBLIC_URL || "https://hikari.app"}${pathname}`,
+                url: `${process.env.NEXT_PUBLIC_URL || "https://hikari.dpdns.org"}${pathname}`,
                 identifier: String(AnimeID),
                 title: `${title} - Hikari`,
                 language: "en",

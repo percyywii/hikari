@@ -13,7 +13,7 @@ const outfit = Outfit({ subsets: ["latin"] });
 
 
 export const metadata = {
-  metadataBase: new URL('https://hikari.app'),
+  metadataBase: new URL('https://hikari.dpdns.org'),
   applicationName: "Hikari",
   title: "Hikari : Stream Anime Free in HD Without Annoying Ads",
   icons: {

@@ -16,7 +16,7 @@ export function WatchSettingContextProvider({ children }) {
   // Load saved preferences from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("tenro_player_settings") || localStorage.getItem("player_settings");
+      const saved = localStorage.getItem("hikari_player_settings") || localStorage.getItem("tenro_player_settings") || localStorage.getItem("player_settings");
       if (saved) {
         const parsed = JSON.parse(saved);
         setWatchSetting((prev) => ({
@@ -35,7 +35,7 @@ export function WatchSettingContextProvider({ children }) {
       const next = typeof updater === "function" ? updater(prev) : { ...prev, ...updater };
       try {
         localStorage.setItem(
-          "tenro_player_settings",
+          "hikari_player_settings",
           JSON.stringify({
             autoPlay: next.autoPlay,
             autoNext: next.autoNext,

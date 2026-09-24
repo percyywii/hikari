@@ -12,7 +12,9 @@ const Popular = () => {
     const getPopular = async () => {
       setLoading(true)
       const data = await PopularAnilist(page)
-      setPopularData([...popularData, ...data])
+      if (Array.isArray(data) && data.length > 0) {
+        setPopularData((prev) => [...prev, ...data])
+      }
       setLoading(false)
     }
     getPopular()

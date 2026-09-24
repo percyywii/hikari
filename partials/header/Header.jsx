@@ -23,10 +23,10 @@ const Header = () => {
           {/* Theme Switcher */}
           <ThemeToggle />
 
-          {/* Notification icon */}
+          {/* Notification icon (desktop) */}
           <button
             type="button"
-            className="text-xl text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 p-2 rounded-lg hover:bg-black/5 dark:hover:bg-[#161926] transition-colors cursor-pointer"
+            className="hidden sm:flex text-xl text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 p-2 rounded-lg hover:bg-black/5 dark:hover:bg-[#161926] transition-colors cursor-pointer"
             aria-label="Notifications"
           >
             <Bell />

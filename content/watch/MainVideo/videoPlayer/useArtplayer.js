@@ -563,9 +563,9 @@ const useArtplayer = (getInstance) => {
             watchInfo?.title || AnimeInfo?.title?.english || AnimeInfo?.title?.romaji
           );
 
-          // Save to Tenro watch history in localStorage
+          // Save to Hikari watch history in localStorage
           try {
-            const hist = JSON.parse(localStorage.getItem("tenro_watch_history")) || {};
+            const hist = JSON.parse(localStorage.getItem("hikari_watch_history") || localStorage.getItem("tenro_watch_history")) || {};
             hist[animeid] = {
               animeId: animeid,
               episode,
@@ -575,7 +575,7 @@ const useArtplayer = (getInstance) => {
               thumbnail: watchInfo?.thumbnail,
               updatedAt: now,
             };
-            localStorage.setItem("tenro_watch_history", JSON.stringify(hist));
+            localStorage.setItem("hikari_watch_history", JSON.stringify(hist));
           } catch {}
 
           lastRun = now;
@@ -590,7 +590,7 @@ const useArtplayer = (getInstance) => {
       if (!isCurrent()) return;
       try {
         const watchHistory =
-          JSON.parse(localStorage.getItem("tenro_watch_history")) ||
+          JSON.parse(localStorage.getItem("hikari_watch_history") || localStorage.getItem("tenro_watch_history")) ||
           JSON.parse(localStorage.getItem("watch_history")) ||
           {};
         if (watchHistory?.[animeid]?.episode?.toString() === episode?.toString()) {

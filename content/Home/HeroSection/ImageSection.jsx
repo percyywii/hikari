@@ -10,7 +10,7 @@ const ImageSection = ({ populardata }) => {
   const [isVideoReady, setIsVideoReady] = useState(false)
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}');
+    const saved = JSON.parse(localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}');
     setVideoPlay(saved?.Preferences?.homePageTrailer ?? true);
   }, []);
 

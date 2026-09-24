@@ -258,7 +258,7 @@ export function WatchAreaContextProvider({ children, AnimeInfo }) {
     let watchHistory = {};
     try {
       watchHistory =
-        JSON.parse(localStorage.getItem("tenro_watch_history")) ||
+        JSON.parse(localStorage.getItem("hikari_watch_history") || localStorage.getItem("tenro_watch_history")) ||
         JSON.parse(localStorage.getItem("watch_history")) ||
         {};
     } catch {

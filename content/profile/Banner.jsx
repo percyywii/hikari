@@ -1,7 +1,7 @@
 import Image from "next/image"
 
 const Banner = ({ info, data }) => {
-  const { count, episodesWatched } = info?.statistics?.anime
+  const { count = 0, episodesWatched = 0 } = info?.statistics?.anime || {}
   const watchedAnime = data?.entries?.length || "0"
 
   return (
@@ -21,7 +21,7 @@ const Banner = ({ info, data }) => {
       <div className="absolute bottom-0 right-1/2 translate-x-1/2 z-10">
         <div className="flex flex-col items-center gap-4">
           <Image src={info?.avatar?.large || "/images/artworks-Xhbx2TzxHzrllTQR-kmD5OQ-t500x500.jpg"} alt="profile" width={150} height={150} className="object-cover w-28 h-28 border-8 border-[#868a8e] rounded-full" />
-          <div className="font-['poppins'] text-[#ffffff] text-2xl font-semibold">{info?.name || "Tenro User"}</div>
+          <div className="font-['poppins'] text-[#ffffff] text-2xl font-semibold">{info?.name || "Hikari User"}</div>
         </div>
 
         <div className="text-slate-100 flex gap-12 mt-2 mb-[26px]">

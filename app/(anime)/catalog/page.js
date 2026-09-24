@@ -14,7 +14,7 @@ const Page = () => {
           <div className="w-[-webkit-fill-available] h-[1px] absolute bg-[#212029] top-[1px]"></div>
 
           <div className="mt-[15px] flex justify-between items-center">
-            <h1 className="text-[#ffffffea] font-medium text-[23px] font-['poppins']">Catalog</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 font-bold text-2xl sm:text-3xl font-['Outfit'] tracking-tight">Catalog</h1>
 
             <SortBy />
           </div>

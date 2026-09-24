@@ -8,7 +8,7 @@ const Appearence = () => {
 
 
   useEffect(() => {
-    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
+    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
     if (jsonifiedLocalsotrage?.appearence) {
       if (jsonifiedLocalsotrage?.appearence?.featuredSection !== undefined) setFeaturedSection(Boolean(jsonifiedLocalsotrage.appearence.featuredSection));
       if (jsonifiedLocalsotrage?.appearence?.continueWatchingSection !== undefined) setContinueWatchingSection(Boolean(jsonifiedLocalsotrage.appearence.continueWatchingSection))
@@ -16,19 +16,19 @@ const Appearence = () => {
   }, [])
 
   useEffect(() => {
-    const LocalsotrageData = localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro")
+    const LocalsotrageData = localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro")
 
     if (LocalsotrageData) {
       let jsonifiedLocalsotrage = JSON.parse(LocalsotrageData || "{}")
 
-      localStorage.setItem("setting.Tenro", JSON.stringify({
+      localStorage.setItem("setting.Hikari", JSON.stringify({
         ...jsonifiedLocalsotrage, appearence: {
           featuredSection,
           continueWatchingSection
         }
       }))
     } else {
-      localStorage.setItem("setting.Tenro", JSON.stringify({
+      localStorage.setItem("setting.Hikari", JSON.stringify({
         appearence: {
           featuredSection: true,
           continueWatchingSection: true

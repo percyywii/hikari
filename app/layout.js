@@ -22,8 +22,11 @@ export const metadata = {
   description: "Welcome to Hikari (光), your ultimate destination for streaming anime free of charge in HD. Dive into a vast collection of subbed and dubbed anime series and movies with multi-server resilience, synchronized audio, and seamless viewing. At Hikari, your anime journey awaits!",
   keywords: [
     'anime',
-    'anilist-tracker',
-    'trending anime',
+    'hikari anime',
+    'hikari anime streaming',
+    'hikari anime watch online',
+    'hikari anime app',
+    'anime streaming free',
     'watch anime subbed',
     'watch anime dubbed',
     'latest anime episodes',
@@ -37,77 +40,46 @@ export const metadata = {
     'english dubbed anime',
     'subbed and dubbed series',
     'anime series updates',
-    'anime episodes english sub',
-    'anime episodes english dub',
-    'latest subbed anime',
-    'latest dubbed anime',
-    'subbed anime streaming',
-    'dubbed anime streaming',
-    'Tenro latest anime',
+    'anilist-tracker',
+    'trending anime',
     'anime watch list',
     'anime reviews',
-    'anime news',
     'anime recommendations',
     'best anime series',
     'popular anime shows',
     'anime streaming platform',
-    'anime download',
     'top anime of the year',
     'anime genres',
     'ongoing anime series',
     'anime fan community',
-    'classic anime series',
     'anime movie streaming',
     'latest anime movies',
     'upcoming anime releases',
-    'anime character rankings',
     'anime discussion forums',
     'anime streaming sites',
     'anime online free',
     'anime episode guide',
-    'anime synopsis',
-    'tenro',
-    'tenro anime',
-    'tenro anime watch online',
-    'tenro-anime website',
-    'tenro anime app',
-    'tenro app',
     'anime release schedule',
-    'watch anime legally',
     'anime marathons',
     'anime streaming without signup',
-    'tenro anime library',
-    'tenro anime catalog',
+    'hikari anime library',
+    'hikari anime catalog',
     'latest anime trends',
     'anime simulcast',
     'anime with multiple audio tracks',
-    'tenro dubbed anime',
     'anime in multiple languages',
     'anime with subtitles',
     'anime episode tracker',
-    'tenro anime subscriptions',
     'free anime episodes',
-    'latest anime on tenro',
     'anime streaming high quality',
-    'discover new anime',
-    'anime streaming without ads',
-    'tenro anime news',
-    'anime streaming schedule',
-    'tenro anime events',
-    'follow anime on tenro',
-    'watch anime in 4K',
     'anime HD streaming',
-    'tenro anime blog',
-    'anime streaming experience',
-    'anime series marathon',
-    'popular anime on tenro',
-    'anime episode countdown',
+    'anime streaming without ads',
     'anime streaming updates',
     'anime on demand',
-    'tenro anime guide',
-    'anime streaming service tenro',
-    'anime streaming interface',
-    'watch anime tenro website'
+    'watch anime in HD',
+    'anime streaming experience',
+    'anime series marathon',
+    'anime streaming service',
   ],
   appleWebApp: {
     capable: true,
@@ -136,7 +108,13 @@ export const metadata = {
 
 
 export default async function RootLayout({ children }) {
-  const session = await getAuthSession();
+  let session = null;
+  try {
+    session = await getAuthSession();
+  } catch (error) {
+    console.warn("Session load error in RootLayout, proceeding as unauthenticated:", error?.message || error);
+    session = null;
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -149,7 +127,7 @@ export default async function RootLayout({ children }) {
           </AuthProvider>
 
           <Analytics />
-          <ToastContainer draggable theme="dark" />
+          <ToastContainer draggable theme="colored" position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>

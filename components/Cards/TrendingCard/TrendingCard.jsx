@@ -15,7 +15,7 @@ const TrendingCard = ({ info }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}');
+    const saved = JSON.parse(localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}');
     setVideoPlay(Boolean(saved?.Preferences?.trendingCardVideo));
   }, []);
 

@@ -23,7 +23,7 @@ const Preferences = () => {
 
 
   useEffect(() => {
-    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
+    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
 
     if (jsonifiedLocalsotrage?.appearence || jsonifiedLocalsotrage?.Preferences) {
       if (jsonifiedLocalsotrage?.Preferences?.homePageTrailer !== undefined) setHomePageTrailer(Boolean(jsonifiedLocalsotrage.Preferences.homePageTrailer))
@@ -33,9 +33,9 @@ const Preferences = () => {
   }, [])
 
   useEffect(() => {
-    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
+    const jsonifiedLocalsotrage = JSON.parse(localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || '{}')
 
-    localStorage.setItem("setting.Tenro", JSON.stringify({
+    localStorage.setItem("setting.Hikari", JSON.stringify({
       ...jsonifiedLocalsotrage, Preferences: {
         homePageTrailer,
         upscaledBanner,

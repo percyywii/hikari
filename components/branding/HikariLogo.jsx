@@ -26,11 +26,11 @@ export default function HikariLogo({
             <span className="text-2xl font-black tracking-wider bg-gradient-to-r from-sky-400 via-cyan-300 to-fuchsia-400 bg-clip-text text-transparent">
               HIKARI
             </span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-500/30 tracking-tight">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-100 dark:bg-sky-950/80 text-sky-600 dark:text-sky-300 border border-sky-300/50 dark:border-sky-500/30 tracking-tight">
               光
             </span>
           </div>
-          <span className="text-[9px] uppercase tracking-[0.22em] text-slate-400 font-medium">
+          <span className="text-[9px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400 font-medium">
             Anime Stream
           </span>
         </div>

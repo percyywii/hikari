@@ -9,7 +9,7 @@ const WatchHistory = () => {
   const [showContinueWatching, setShowContinueWatching] = useState(false)
 
   useEffect(() => {
-    const localSetting = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || "{}")
+    const localSetting = JSON.parse(localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || "{}")
     if (localSetting?.appearence?.continueWatchingSection !== false) {
       setShowContinueWatching(true)
     }

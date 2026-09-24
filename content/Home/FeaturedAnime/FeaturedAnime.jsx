@@ -24,7 +24,7 @@ const FeaturedAnime = ({ data }) => {
 
   useEffect(() => {
     if (typeof window !== undefined) {
-      const setting = JSON.parse(localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || "{}")
+      const setting = JSON.parse(localStorage.getItem("setting.Hikari") || localStorage.getItem("setting.Tenro") || localStorage.getItem("setting.Taro") || "{}")
 
       if (
         setting?.appearence?.featuredSection ||

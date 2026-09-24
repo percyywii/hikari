@@ -80,7 +80,7 @@ const VideoPlayerContainer = ({ getInstance }) => {
   };
 
   const handleReportProblem = () => {
-    toast.success("Thank you! A stream report has been submitted to Tenro engineers.");
+    toast.success("Thank you! A stream report has been submitted to Hikari engineers.");
   };
 
   const isLoading =

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import styles from "./HeroSection.module.css";
-import { FaCirclePlay, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { FaCirclePlay } from "react-icons/fa6";
 import Button from "@/components/ui/Button";
 import ImageSection from "./ImageSection";
 import Link from "next/link";
@@ -35,16 +35,6 @@ const Herosection = ({ data }) => {
 
     return () => clearInterval(timer);
   }, [totalSlides, isPaused]);
-
-  const nextSlide = useCallback(() => {
-    if (totalSlides <= 1) return;
-    setCurrentIndex((prev) => (prev + 1) % totalSlides);
-  }, [totalSlides]);
-
-  const prevSlide = useCallback(() => {
-    if (totalSlides <= 1) return;
-    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-  }, [totalSlides]);
 
   const title =
     currentAnime?.title?.english ||
@@ -165,50 +155,8 @@ const Herosection = ({ data }) => {
         </div>
       )}
 
-      {/* Apple-Grade Navigation Arrows */}
-      {totalSlides > 1 && (
-        <>
-          <button
-            type="button"
-            onClick={prevSlide}
-            aria-label="Previous Slide"
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/40 dark:bg-black/40 hover:bg-white/80 dark:hover:bg-black/70 border border-slate-200 dark:border-white/20 text-slate-800 dark:text-white flex items-center justify-center backdrop-blur-md shadow-lg transition-all scale-100 hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            <FaChevronLeft className="w-3.5 h-3.5 -ml-0.5" />
-          </button>
 
-          <button
-            type="button"
-            onClick={nextSlide}
-            aria-label="Next Slide"
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/40 dark:bg-black/40 hover:bg-white/80 dark:hover:bg-black/70 border border-slate-200 dark:border-white/20 text-slate-800 dark:text-white flex items-center justify-center backdrop-blur-md shadow-lg transition-all scale-100 hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            <FaChevronRight className="w-3.5 h-3.5 ml-0.5" />
-          </button>
-        </>
-      )}
-
-      {/* Apple-Grade Slide Indicator Pills (Bottom Center) */}
-      {totalSlides > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 p-1.5 rounded-full bg-white/30 dark:bg-black/40 border border-slate-200/60 dark:border-white/10 backdrop-blur-lg shadow-lg">
-          {slides.map((slide, index) => {
-            const isActive = index === currentIndex;
-            return (
-              <button
-                key={slide.id || index}
-                type="button"
-                onClick={() => setCurrentIndex(index)}
-                aria-label={`Go to slide ${index + 1}`}
-                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                  isActive
-                    ? "w-7 bg-cyan-500 shadow-sm shadow-cyan-500/50"
-                    : "w-2 bg-slate-400/60 dark:bg-white/40 hover:bg-slate-600 dark:hover:bg-white/70"
-                }`}
-              />
-            );
-          })}
-        </div>
-      )}
+    
     </div>
   );
 };

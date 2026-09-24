@@ -2,8 +2,8 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
 const options = {
-  connectTimeoutMS: 10000,
-  serverSelectionTimeoutMS: 10000,
+  connectTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 5000,
 };
 const isNextBuild = process.env.NEXT_PHASE === "phase-production-build";
 
@@ -11,7 +11,7 @@ const observeConnection = (promise) => {
   promise.catch((error) => {
     if (!global._mongoConnectionErrorLogged) {
       global._mongoConnectionErrorLogged = true;
-      console.error("MongoDB connection unavailable:", error?.message || error);
+      console.warn("MongoDB connection unavailable (running in guest/JWT session mode):", error?.message || error);
     }
   });
   return promise;

@@ -16,13 +16,12 @@ export default function AnimeFigureLoader({
   message,
   mascot = "/images/waifus/1.png",
   fullScreen = false,
-  showPikachu = true,
   className = "",
 }) {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
   useEffect(() => {
-    if (message) return; // If custom message provided, don't cycle
+    if (message) return;
     const interval = setInterval(() => {
       setCurrentMessageIndex((prev) => (prev + 1) % DEFAULT_MESSAGES.length);
     }, 2800);
@@ -65,20 +64,6 @@ export default function AnimeFigureLoader({
               priority
             />
           </div>
-
-          {/* Mini Pikachu Running Companion */}
-          {showPikachu && (
-            <div className="absolute -bottom-2 -right-4 z-20 w-12 h-12 animate-bounce">
-              <Image
-                src="/images/pikachu-running.gif"
-                alt="Running Pikachu"
-                width={48}
-                height={48}
-                className="object-contain drop-shadow-[0_2px_8px_rgba(250,204,21,0.4)]"
-                unoptimized
-              />
-            </div>
-          )}
         </div>
 
         {/* Glowing Progress Track */}

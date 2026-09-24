@@ -125,7 +125,13 @@ export const authOptions = {
 
 const handler = NextAuth(authOptions)
 
-export const getAuthSession = () =>
-  clientPromise ? getServerSession(authOptions).catch(() => null) : null;
+export const getAuthSession = async () => {
+  try {
+    return await getServerSession(authOptions);
+  } catch (error) {
+    console.warn("Failed to retrieve auth session, continuing unauthenticated:", error?.message || error);
+    return null;
+  }
+};
 
 export { handler as GET, handler as POST }

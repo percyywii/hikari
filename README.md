@@ -1,16 +1,22 @@
 <div align="center">
-  <a href="" target="_blank">
-    <img src="https://github.com/Amritanshu312/Taro/blob/main/public/images/logo.png" alt="Logo" width="140" height="140">
-  </a>
+  <img src="/images/logo.svg" alt="Hikari Logo" width="120" height="120">
 
-  <h2 align="center">Taro</h3>
+  <h1 align="center">Hikari (光) - Anime Streaming Platform</h1>
 
   <p align="center">
-    An open-source Anime streaming site built with Nextjs 14
+    Stream Anime Free in HD Without Annoying Ads with Sub & Dub Synchronization
+  </p>
+
+  <p align="center">
+    <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fpercyywii%2Fhikari">
+      <img src="https://vercel.com/button" alt="Deploy with Vercel"/>
+    </a>
   </p>
 </div>
 
-# About the Project
+# About Hikari
+
+Hikari (光) is a modern, high-performance anime streaming platform built with Next.js 15, Tailwind CSS, Artplayer, HLS.js, and AniList GraphQL integration. Designed with Apple-grade polish, full dark/light theme support, single Pikachu loading engine, multi-server streaming resilience, and dual Sub/Dub audio synchronization.
 
 Experience uninterrupted, ad-free streaming with seamless progress tracking thanks to AniList integration, powered by the Consumet API. Our platform, built using Next.js 14, Nextui, MongoDB, and Redis, ensures a smooth and enjoyable user experience.
 

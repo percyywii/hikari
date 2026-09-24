@@ -8,45 +8,6 @@ import { FaComment, FaHeart, FaReply, FaTriangleExclamation, FaCheck } from "rea
 import { IoSend } from "react-icons/io5";
 import Image from "next/image";
 
-const SEED_COMMENTS = [
-  {
-    id: "seed-1",
-    author: "Kurogane",
-    avatar: "/images/waifus/1.png",
-    timeAgo: "2 hours ago",
-    content: "The animation quality this season is insane! The pacing in the second half gave me chills.",
-    likes: 18,
-    isSpoiler: false,
-    replies: [
-      {
-        id: "seed-1-1",
-        author: "HikariFan",
-        avatar: "/images/logo.png",
-        timeAgo: "1 hour ago",
-        content: "Totally agree! The sound design with headphones made it 10x better.",
-        likes: 5,
-      }
-    ]
-  },
-  {
-    id: "seed-2",
-    author: "Zenith",
-    avatar: "/images/logo.png",
-    timeAgo: "5 hours ago",
-    content: "Make sure you watch through the credits. The post-credit scene sets up the entire next arc!",
-    likes: 31,
-    isSpoiler: true,
-  },
-  {
-    id: "seed-3",
-    author: "Akane",
-    avatar: "/images/waifus/1.png",
-    timeAgo: "1 day ago",
-    content: "Best episode so far! Voice acting was on another level.",
-    likes: 12,
-    isSpoiler: false,
-  }
-];
 
 const CommentItem = ({ comment, onLike, onReply }) => {
   const [revealed, setRevealed] = useState(!comment.isSpoiler);
@@ -152,19 +113,26 @@ const Comments = ({ AnimeID, title }) => {
   const [disqusLoading, setDisqusLoading] = useState(true);
   const [disqusBlocked, setDisqusBlocked] = useState(false);
 
-  // Load comments from localStorage with seed fallback
+  // Load real comments from localStorage (excluding any legacy seed comments)
   useEffect(() => {
     if (!AnimeID) return;
     try {
       const storageKey = `hikari_comments_${AnimeID}`;
       const saved = localStorage.getItem(storageKey);
       if (saved) {
-        setComments(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        const real = Array.isArray(parsed)
+          ? parsed.filter((c) => !String(c?.id || "").startsWith("seed-"))
+          : [];
+        setComments(real);
+        if (Array.isArray(parsed) && real.length !== parsed.length) {
+          localStorage.setItem(storageKey, JSON.stringify(real));
+        }
       } else {
-        setComments(SEED_COMMENTS);
+        setComments([]);
       }
     } catch {
-      setComments(SEED_COMMENTS);
+      setComments([]);
     }
   }, [AnimeID]);
 
@@ -326,14 +294,24 @@ const Comments = ({ AnimeID, title }) => {
 
           {/* Comments List */}
           <div className="space-y-1">
-            {comments.map((comment) => (
-              <CommentItem
-                key={comment.id}
-                comment={comment}
-                onLike={handleLike}
-                onReply={handleReply}
-              />
-            ))}
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <CommentItem
+                  key={comment.id}
+                  comment={comment}
+                  onLike={handleLike}
+                  onReply={handleReply}
+                />
+              ))
+            ) : (
+              <div className="py-10 text-center flex flex-col items-center justify-center">
+                <FaComment className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-2 opacity-60" />
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">No comments yet</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                  Be the first to share your thoughts on this episode!
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -371,7 +349,7 @@ const Comments = ({ AnimeID, title }) => {
             <DiscussionEmbed
               shortname={process.env.NEXT_PUBLIC_DISQUS_SHORTNAME || "taro-6"}
               config={{
-                url: `${process.env.NEXT_PUBLIC_URL || "https://hikari.dpdns.org"}${pathname}`,
+                url: `${process.env.NEXT_PUBLIC_URL || "https://hikarianime.vercel.app"}${pathname}`,
                 identifier: String(AnimeID),
                 title: `${title} - Hikari`,
                 language: "en",

@@ -69,31 +69,31 @@ const Dropdown = ({ data, isLoggedIn, onClose }) => {
               Guest Mode
             </p>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">
-              Connect AniList to sync progress
+              Sign in to sync your anime journey
             </p>
           </div>
 
-          <div className="py-1 space-y-0.5">
+          <div className="py-1 space-y-1">
+            <Link
+              href="/profile"
+              onClick={onClose}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold transition-all cursor-pointer text-left shadow-sm"
+            >
+              <FaUser className="w-3.5 h-3.5" />
+              <span>Sign In / Profile</span>
+            </Link>
+
             <button
               type="button"
               onClick={() => {
                 if (onClose) onClose();
                 signIn("AniListProvider");
               }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 font-semibold transition-colors cursor-pointer text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-300 font-medium transition-colors cursor-pointer text-left text-xs"
             >
               <RxExit className="w-3.5 h-3.5" />
-              <span>Sign In with AniList</span>
+              <span>Connect AniList</span>
             </button>
-
-            <Link
-              href="/profile"
-              onClick={onClose}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-[#1A1D2B] text-slate-700 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            >
-              <FaUser className="w-3.5 h-3.5" />
-              <span>Profile</span>
-            </Link>
 
             <Link
               href="/settings"

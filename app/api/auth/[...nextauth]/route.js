@@ -1,12 +1,41 @@
 import NextAuth from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import clientPromise from "@/mongodb/db";
 import { getServerSession } from "next-auth"
 
 export const authOptions = {
   ...(clientPromise && { adapter: MongoDBAdapter(clientPromise) }),
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "hikari-nextauth-secret-key-production-2026",
   providers: [
+    CredentialsProvider({
+      id: "credentials",
+      name: "Hikari Account",
+      credentials: {
+        username: { label: "Username", type: "text", placeholder: "HikariFan" },
+        avatar: { label: "Avatar", type: "text" },
+      },
+      async authorize(credentials) {
+        const username = credentials?.username?.trim() || "Hikari Member";
+        const avatarUrl = credentials?.avatar?.trim() || "/images/waifus/1.png";
+        return {
+          id: `hikari_${Date.now()}`,
+          name: username,
+          email: `${username.toLowerCase().replace(/[^a-z0-9]/g, "") || "user"}@hikari.app`,
+          image: {
+            large: avatarUrl,
+            medium: avatarUrl,
+          },
+          avatar: {
+            large: avatarUrl,
+            medium: avatarUrl,
+          },
+          bannerImage: "/images/banner.jpg",
+          createdAt: Math.floor(Date.now() / 1000),
+          isLocal: true,
+        };
+      },
+    }),
     {
       id: "AniListProvider",
       name: "AniList",
@@ -17,82 +46,63 @@ export const authOptions = {
         params: { scope: "", response_type: "code" },
       },
       userinfo: {
-        url: process.env.GRAPHQL_ENDPOINT,
+        url: process.env.GRAPHQL_ENDPOINT || "https://graphql.anilist.co",
         async request(context) {
-          const { data } = await fetch("https://graphql.anilist.co", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${context.tokens.access_token}`,
-              Accept: "application/json",
-            },
-            body: JSON.stringify({
-              query: `
-                  query {
-                    Viewer {
-                      id
-                      name
-                      avatar {
-                        large
-                        medium
-                      }
-                      bannerImage
-                      createdAt
-                      mediaListOptions {
-                        animeList {
-                          customLists
+          try {
+            const res = await fetch("https://graphql.anilist.co", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${context.tokens.access_token}`,
+                Accept: "application/json",
+              },
+              body: JSON.stringify({
+                query: `
+                    query {
+                      Viewer {
+                        id
+                        name
+                        avatar {
+                          large
+                          medium
+                        }
+                        bannerImage
+                        createdAt
+                        mediaListOptions {
+                          animeList {
+                            customLists
+                          }
                         }
                       }
                     }
-                  }
-                `,
-            }),
-          }).then((res) => res.json());
+                  `,
+              }),
+            });
+            const { data } = await res.json();
+            const viewer = data?.Viewer;
+            if (!viewer) {
+              throw new Error("Viewer not found in AniList response");
+            }
 
-          const userLists = data.Viewer?.mediaListOptions.animeList.customLists;
-
-          let customLists = userLists || [];
-
-          if (!userLists?.includes("Watched Via Tenro")) {
-            customLists.push("Watched Via Tenro");
-            const fetchGraphQL = async (query, variables) => {
-              const response = await fetch("https://graphql.anilist.co/", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  ...(context.tokens.access_token && {
-                    Authorization: `Bearer ${context.tokens.access_token}`,
-                  }),
-                  Accept: "application/json",
-                },
-                body: JSON.stringify({ query, variables }),
-              });
-              return response.json();
+            return {
+              token: context.tokens.access_token,
+              name: viewer.name,
+              sub: String(viewer.id),
+              image: viewer.avatar,
+              createdAt: viewer.createdAt,
+              list: viewer.mediaListOptions?.animeList?.customLists || [],
             };
-
-            const modifiedLists = async (lists) => {
-              const setList = `
-                      mutation($lists: [String]){
-                        UpdateUser(animeListOptions: { customLists: $lists }){
-                          id
-                        }
-                      }
-                    `;
-              const data = await fetchGraphQL(setList, { lists });
-              return data;
+          } catch (err) {
+            console.warn("AniList userinfo fetch warning:", err?.message || err);
+            return {
+              token: context.tokens.access_token,
+              name: "AniList User",
+              sub: "anilist_user",
+              image: { large: "/images/logo.png", medium: "/images/logo.png" },
+              createdAt: Math.floor(Date.now() / 1000),
+              list: [],
             };
-
-            await modifiedLists(customLists);
           }
-
-          return {
-            token: context.tokens.access_token,
-            name: data.Viewer.name,
-            sub: data.Viewer.id,
-            image: data.Viewer.avatar,
-            createdAt: data.Viewer.createdAt,
-            list: data.Viewer?.mediaListOptions.animeList.customLists,
-          };
         },
       },
       clientId: process.env.ANILIST_CLIENT_ID,
@@ -114,10 +124,25 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.image = user.image || user.avatar;
+        token.token = user.token || null;
+        token.createdAt = user.createdAt;
+        token.list = user.list || [];
+        token.isLocal = Boolean(user.isLocal);
+        token.bannerImage = user.bannerImage || "/images/banner.jpg";
+      }
+      return token;
     },
-    async session({ session, token, user }) {
-      session.user = token;
+    async session({ session, token }) {
+      if (token) {
+        session.user = {
+          ...session.user,
+          ...token,
+        };
+      }
       return session;
     },
   },

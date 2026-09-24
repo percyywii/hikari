@@ -22,8 +22,21 @@ const Page = async () => {
     return <GuestProfile />;
   }
 
-  const data = await UserProfile(session?.user?.token, session?.user?.name);
-  const user = data?.user || session.user;
+  let data = null;
+  if (session?.user?.token && !session?.user?.isLocal) {
+    try {
+      data = await UserProfile(session.user.token, session.user.name);
+    } catch {
+      data = null;
+    }
+  }
+
+  const user = data?.user || {
+    ...session.user,
+    avatar: session.user.avatar || session.user.image,
+    bannerImage: session.user.bannerImage || "/images/banner.jpg",
+    statistics: session.user.statistics || { anime: { count: 0, episodesWatched: 0, minutesWatched: 0 } },
+  };
   const lists = Array.isArray(data?.lists) ? data.lists : [];
 
   const watchedAnime = lists.find((item) => item?.status === "COMPLETED") || null;

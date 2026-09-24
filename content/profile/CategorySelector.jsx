@@ -11,7 +11,8 @@ import { useMemo } from "react";
 const CategorySelector = ({ active, setActive, data }) => {
 
   const statusMap = useMemo(() => {
-    return data.reduce((acc, item) => {
+    const list = Array.isArray(data) ? data : [];
+    return list.reduce((acc, item) => {
       if (item && item.status) {
         acc[item.status] = (item.entries || []).length;
       }

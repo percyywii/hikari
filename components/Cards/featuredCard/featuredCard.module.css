@@ -1,19 +1,19 @@
 .card {
   background: #22212c;
-  padding: 10px 20px;
-  border-radius: 15px;
-  text-align: center;
+  padding: 16px 20px 0 20px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  height: 275px;
+  width: 100%;
 }
 
 .card:hover {
-  box-shadow: 0px 0px 55px 8px #26243c85;
+  box-shadow: 0px 0px 45px 6px #26243c95;
   transition: 0.2s;
 }
 
@@ -25,6 +25,7 @@
   left: 0;
   bottom: 0;
   background: linear-gradient(360deg, #2c2a3eb8, #0000);
+  pointer-events: none;
 }
 
 .card:hover::before {
@@ -35,4 +36,5 @@
   left: 0;
   bottom: 0;
   background: linear-gradient(360deg, #12111a, #0000);
+  pointer-events: none;
 }

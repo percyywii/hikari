@@ -104,7 +104,7 @@ const Collection = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(340px,1fr))] gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AnimatePresence>
           {visibleCards.map((item, index) => (
             <motion.div
@@ -113,6 +113,7 @@ const Collection = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25, delay: index * 0.04 }}
+              className="h-full w-full"
             >
               <FeaturedCard data={item} />
             </motion.div>
@@ -121,18 +122,16 @@ const Collection = () => {
       </div>
 
       {isExpanded && (
-        <div className="flex justify-center mt-6 mb-12">
+        <div className="flex justify-center mt-8">
           <Link
             href="/catalog"
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 text-xs sm:text-sm font-semibold transition-all hover:scale-105"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 text-xs sm:text-sm font-semibold transition-all hover:scale-105"
           >
             <FaCompass className="w-4 h-4" />
             <span>Explore All Anime in Catalog</span>
           </Link>
         </div>
       )}
-
-      <div className={isExpanded ? "mb-16" : "mb-20"} />
     </div>
   );
 };

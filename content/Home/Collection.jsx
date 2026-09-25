@@ -1,70 +1,84 @@
+"use client";
+
+import { useState } from "react";
 import FeaturedCard from "@/components/Cards/featuredCard/FeaturedCard";
+import { FaChevronDown, FaChevronUp, FaCompass } from "react-icons/fa6";
 import Link from "next/link";
-import { FaArrowRight } from "react-icons/fa6";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Collection = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const data = [
     {
       text: "Action & Shounen Hits",
       genre: "Action",
       href: `/catalog?genres=%5B"Action"%5D&sort=POPULARITY_DESC`,
+      titles: ["JUJUTSU KAISEN", "Attack on Titan", "Demon Slayer"],
       image: [
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101302-7L0lcwYeFQQM.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127230-NuHM32a3VJsb.png",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx171627-EzihNzljlKKs.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113415-LHBAeoZDIsnF.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-buvcRTBx4NSm.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101922-WBsBl0ClmgYL.jpg",
       ],
     },
     {
       text: "Romance & Drama",
       genre: "Romance",
       href: `/catalog?genres=%5B"Romance"%5D&sort=POPULARITY_DESC`,
+      titles: ["Kaguya-sama: Love is War", "Your Lie in April", "Horimiya"],
       image: [
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9260-tbZARfVq8JoX.png",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/21650-qFjRMXrw1jku.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97863-79AXrUZ7VQa5.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101921-ufrjLzhSz7L1.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20665-TLgkL8T8IRFd.png",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx124080-3i22mRVPBS0T.jpg",
       ],
     },
     {
-      text: "Fantasy & Supernatural",
+      text: "Fantasy & Adventure",
       genre: "Fantasy",
       href: `/catalog?genres=%5B"Fantasy"%5D&sort=POPULARITY_DESC`,
+      titles: ["Frieren: Beyond Journey's End", "Mushoku Tensei", "Re:ZERO"],
       image: [
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-n2bcsTF7SN0U.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108465-b778p9L5wJ7A.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-m5ZMNScFlOdW.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-qQTzQnEJJ3oB.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108465-1ANspF1EWyFx.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg",
       ],
     },
     {
       text: "Sci-Fi & Cyberpunk",
       genre: "Sci-Fi",
       href: `/catalog?genres=%5B"Sci-Fi"%5D&sort=POPULARITY_DESC`,
+      titles: ["Steins;Gate", "Cyberpunk: Edgerunners", "Psycho-Pass"],
       image: [
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx128893-n2eC3jG9mH8x.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1-CXtrrkB3y8rP.png",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9253-7pdcVzQSkpKq.png",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9253-tIUXF2gfU8Sg.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx120377-ayZPoxiWt4Li.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx13601-i42VFuHpqEOJ.jpg",
       ],
     },
     {
       text: "Comedy & Slice of Life",
       genre: "Comedy",
       href: `/catalog?genres=%5B"Comedy"%5D&sort=POPULARITY_DESC`,
+      titles: ["SPY x FAMILY", "Bocchi the Rock!", "KonoSuba"],
       image: [
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-vNeHiCLivOD3.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx130298-O7nR1Wrav2dH.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx148109-cwAINDGwAHB2.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-Kb6R5nYQfjmP.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx130003-HTDmeL4RGeJ4.png",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21202-mPOr80AEjUcZ.png",
       ],
     },
     {
       text: "Supernatural & Mystery",
       genre: "Supernatural",
       href: `/catalog?genres=%5B"Supernatural"%5D&sort=POPULARITY_DESC`,
+      titles: ["Death Note", "Tokyo Ghoul", "The Promised Neverland"],
       image: [
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-lawCwhqnflbR.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20605-4gLd3HkI9ZzB.jpg",
-        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131573-0wO0L6bQ4rE1.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b20605-k665mVkSug8D.jpg",
+        "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101759-8UR7r9MNVpz2.jpg",
       ],
     },
   ];
+
+  const visibleCards = isExpanded ? data : data.slice(0, 3);
 
   return (
     <div className="w-full max-w-[96rem] relative mx-5 transition-colors">
@@ -76,20 +90,49 @@ const Collection = () => {
           </h2>
         </div>
 
-        <Link
-          href="/catalog"
-          className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm font-semibold transition-colors group"
+        <button
+          type="button"
+          onClick={() => setIsExpanded((prev) => !prev)}
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-[#1A1D2B] border border-slate-200 dark:border-[#2B3048] hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
         >
-          <span>See All</span>
-          <FaArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-        </Link>
+          <span>{isExpanded ? "See Less" : "See More"}</span>
+          {isExpanded ? (
+            <FaChevronUp className="w-3 h-3 text-cyan-500" />
+          ) : (
+            <FaChevronDown className="w-3 h-3 text-cyan-500" />
+          )}
+        </button>
       </div>
 
-      <div className="mb-20 grid grid-cols-[repeat(auto-fit,minmax(340px,1fr))] gap-5">
-        {data.map((item, index) => (
-          <FeaturedCard key={index} data={item} />
-        ))}
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(340px,1fr))] gap-5">
+        <AnimatePresence>
+          {visibleCards.map((item, index) => (
+            <motion.div
+              key={item.text}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.25, delay: index * 0.04 }}
+            >
+              <FeaturedCard data={item} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
+      {isExpanded && (
+        <div className="flex justify-center mt-6 mb-12">
+          <Link
+            href="/catalog"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 text-xs sm:text-sm font-semibold transition-all hover:scale-105"
+          >
+            <FaCompass className="w-4 h-4" />
+            <span>Explore All Anime in Catalog</span>
+          </Link>
+        </div>
+      )}
+
+      <div className={isExpanded ? "mb-16" : "mb-20"} />
     </div>
   );
 };

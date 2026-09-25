@@ -8,6 +8,8 @@ const FeaturedCard = ({ data }) => {
     data?.href ||
     `/catalog?genres=${encodeURIComponent(JSON.stringify([data?.genre || "Action"]))}&sort=POPULARITY_DESC`;
 
+  const titles = data?.titles || [];
+
   return (
     <Link
       href={targetUrl}
@@ -24,31 +26,31 @@ const FeaturedCard = ({ data }) => {
       </div>
 
       <div className="mt-6 flex justify-center items-center w-full relative top-8 translate-x-6 z-[2]">
-        <div className="border-4 border-[#6f6b8a] -rotate-12 rounded-2xl overflow-hidden w-max shadow-xl group-hover:-rotate-16 transition-transform duration-300">
+        <div className="border-4 border-[#6f6b8a] -rotate-12 rounded-2xl overflow-hidden w-max shadow-xl group-hover:-rotate-16 transition-transform duration-300 bg-[#151421]">
           <Image
             src={data?.image[0]}
-            alt={data?.text || "Collection"}
+            alt={titles[0] || data?.text || "Anime"}
             width={140}
             height={220}
-            quality={60}
+            quality={75}
             className="object-cover h-[180px] w-[120px]"
           />
         </div>
-        <div className="border-4 border-[#6f6b8a] -rotate-2 z-[1] rounded-2xl overflow-hidden w-max relative top-2 right-8 shadow-xl group-hover:scale-105 transition-transform duration-300">
+        <div className="border-4 border-[#6f6b8a] -rotate-2 z-[1] rounded-2xl overflow-hidden w-max relative top-2 right-8 shadow-xl group-hover:scale-105 transition-transform duration-300 bg-[#151421]">
           <Image
             src={data?.image[1]}
-            alt={data?.text || "Collection"}
-            quality={60}
+            alt={titles[1] || data?.text || "Anime"}
+            quality={75}
             width={140}
             height={220}
             className="object-cover h-[180px] w-[120px]"
           />
         </div>
-        <div className="border-4 border-[#6f6b8a] z-[2] rotate-12 rounded-2xl overflow-hidden w-max relative top-10 right-20 shadow-xl group-hover:rotate-16 transition-transform duration-300">
+        <div className="border-4 border-[#6f6b8a] z-[2] rotate-12 rounded-2xl overflow-hidden w-max relative top-10 right-20 shadow-xl group-hover:rotate-16 transition-transform duration-300 bg-[#151421]">
           <Image
             src={data?.image[2]}
-            alt={data?.text || "Collection"}
-            quality={60}
+            alt={titles[2] || data?.text || "Anime"}
+            quality={75}
             width={140}
             height={220}
             className="object-cover h-[180px] w-[120px]"

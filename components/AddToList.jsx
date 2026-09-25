@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { GoPlus } from "react-icons/go";
 import { FaCheck } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";

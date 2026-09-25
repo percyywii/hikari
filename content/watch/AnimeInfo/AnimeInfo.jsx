@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import AddToList from "@/components/AddToList";
 
 const AnimeInfo = ({ info }) => {
   const title = info?.title?.english || info?.title?.romaji || info?.title?.userPreferred || "Anime";
@@ -18,11 +19,14 @@ const AnimeInfo = ({ info }) => {
       </div>
 
       <div className="mt-1 flex-1 min-w-0">
-        <h1 className="text-2xl sm:text-3xl font-['Outfit'] font-bold text-slate-900 dark:text-white tracking-tight">
-          {title}
-        </h1>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <h1 className="text-2xl sm:text-3xl font-['Outfit'] font-bold text-slate-900 dark:text-white tracking-tight flex-1">
+            {title}
+          </h1>
+          <AddToList anime={info} />
+        </div>
 
-        <div className="flex items-center gap-2 mt-2 mb-3">
+        <div className="flex items-center gap-2 mt-2 mb-3 flex-wrap">
           <span className="bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 text-xs px-2 py-0.5 rounded-md font-semibold">
             HD 1080p
           </span>

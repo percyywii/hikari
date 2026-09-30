@@ -58,13 +58,13 @@ const ProfileCard = ({ info, loading, hidden }) => {
           />
         </div>
 
-        <div className="absolute bottom-[13px] left-[15px] right-[15px] text-white z-10">
-          <div className="line-clamp-1 text-ellipsis overflow-hidden font-semibold text-sm cursor-pointer transition-colors group-hover:text-cyan-300">
+        <div className="absolute bottom-[13px] left-[15px] right-[15px] text-white z-10 force-white" data-overlay>
+          <div className="line-clamp-1 text-ellipsis overflow-hidden font-semibold text-sm cursor-pointer transition-colors group-hover:text-cyan-300 force-white">
             {displayTitle}
           </div>
-          <div className="text-xs text-slate-300 flex items-center justify-between mt-0.5">
-            <span>{displayStatus}</span>
-            {info?.progress ? <span className="text-cyan-400 font-medium">Ep {info.progress}</span> : null}
+          <div className="text-xs text-slate-200 flex items-center justify-between mt-0.5 force-white">
+            <span className="force-white">{displayStatus}</span>
+            {info?.progress ? <span className="text-cyan-400 font-medium force-white">Ep {info.progress}</span> : null}
           </div>
         </div>
       </motion.div>

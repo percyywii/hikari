@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Catalog", href: "/catalog" },
   { label: "Trending", href: "/catalog?sort=TRENDING_DESC" },
+  { label: "Calendar", href: "/calendar" },
   { label: "Continue Watching", href: "/continue-watching" }
 ];
 

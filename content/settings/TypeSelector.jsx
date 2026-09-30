@@ -1,4 +1,4 @@
-import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5"
+import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import { FaBrush } from "react-icons/fa6";
 import { BiLogoPlayStore } from "react-icons/bi";
 import { IoMdLink } from "react-icons/io";
@@ -8,42 +8,45 @@ const TypeSelector = ({ isLoggedIn }) => {
     {
       name: "Account",
       icon: <IoPersonOutline />,
-      requirelogin: true
+      requirelogin: true,
     },
     {
       name: "Appearance",
-      icon: <FaBrush />
+      icon: <FaBrush />,
     },
     {
       name: "Preferences",
-      icon: <IoSettingsOutline />
+      icon: <IoSettingsOutline />,
     },
     {
       name: "Watch Page",
-      icon: <BiLogoPlayStore />
+      icon: <BiLogoPlayStore />,
     },
     {
       name: "App Information",
-      icon: <IoMdLink />
+      icon: <IoMdLink />,
     },
-  ]
-
+  ];
 
   return (
-    <div className="max-w-72 w-full fixed">
+    <div className="max-w-72 w-full fixed select-none">
+      <div className="text-slate-900 dark:text-white font-['Outfit'] font-bold text-xl mb-4">
+        Settings
+      </div>
 
-      <div className="text-[#ffffffbe] font-['poppins'] font-semibold">Settings</div>
-
-      <div className="flex flex-col gap-2 mt-2">
-        {types.map((d, _) => (
-          <div key={_} className="flex gap-2 items-center text-[16px] font-medium py-3 px-2 rounded-md cursor-pointer hover:bg-[#282635de]">
-            <div className="text-2xl">{d?.icon}</div>
-            <div className="font-['poppins']">{d?.name}</div>
+      <div className="flex flex-col gap-1.5 mt-2">
+        {types.map((d, i) => (
+          <div
+            key={i}
+            className="flex gap-3 items-center text-sm font-semibold py-2.5 px-3 rounded-xl cursor-pointer text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+          >
+            <div className="text-lg text-cyan-500">{d?.icon}</div>
+            <div className="font-['Outfit']">{d?.name}</div>
           </div>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TypeSelector
+export default TypeSelector;

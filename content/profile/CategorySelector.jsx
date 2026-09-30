@@ -60,28 +60,34 @@ const CategorySelector = ({ active, setActive, data }) => {
   ], [statusMap]);
 
   return (
-    <div className="relative w-full min-[762px]:h-14 border-b border-[#23253274] text-white z-10">
-      <div className="flex items-center justify-center h-full gap-1 max-[762px]:flex-wrap">
-
-
-        {categorys.map((item, index) => <div
-          key={index}
-          className={
-            clsx(
-              "relative flex gap-1 items-center cursor-pointer px-2 py-4 justify-center after:bg-[#ffffff9d] after:hover:w-full after:h-[3px] after:rounded-lg after:absolute after:bottom-0 after:w-0 after:transition-all",
-              { "after:bg-[#ffffff9d] after:w-full after:h-[3px] after:rounded-lg after:absolute after:bottom-0": categorys.find(item => item?.id === active)?.title === item?.title }
-            )
-          }
-          onClick={() => setActive(item?.id)}
-        >
-          <div className="text-xl">{item?.icon}</div>
-          <div>{item?.title}</div>
-          <span>{item?.number}</span>
-        </div>)}
-
+    <div className="relative w-full min-[762px]:h-14 border-b border-slate-200 dark:border-[#23253274] text-slate-700 dark:text-slate-300 z-10">
+      <div className="flex items-center justify-center h-full gap-2 max-[762px]:flex-wrap">
+        {categorys.map((item, index) => {
+          const isActive = categorys.find((c) => c?.id === active)?.title === item?.title;
+          return (
+            <div
+              key={index}
+              className={clsx(
+                "relative flex gap-1.5 items-center cursor-pointer px-3 py-3.5 justify-center text-sm font-semibold transition-all select-none",
+                isActive
+                  ? "text-cyan-600 dark:text-cyan-400 after:bg-cyan-500 after:w-full after:h-[3px] after:rounded-full after:absolute after:bottom-0"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white after:bg-cyan-500/50 after:hover:w-full after:h-[3px] after:rounded-full after:absolute after:bottom-0 after:w-0 after:transition-all"
+              )}
+              onClick={() => setActive(item?.id)}
+            >
+              <div className="text-lg">{item?.icon}</div>
+              <div>{item?.title}</div>
+              {item?.number !== undefined && (
+                <span className="text-xs px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-[#1A1D2B] text-slate-600 dark:text-slate-400 font-normal">
+                  {item.number}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
-  )
+  );
 }
 
 export default CategorySelector

@@ -99,24 +99,24 @@ const Card = ({ data, index, loading, hidden }) => {
 
           {/* Top Score Badge */}
           {rating && (
-            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/10 flex items-center gap-1 text-[11px] font-semibold text-amber-400 shadow-md">
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/15 flex items-center gap-1 text-[11px] font-semibold text-amber-400 shadow-md force-white" data-overlay>
               <FaStar className="w-2.5 h-2.5 text-amber-400" />
-              <span>{rating}</span>
+              <span className="text-amber-400 font-bold">{rating}</span>
             </div>
           )}
 
           {/* Bottom Card Meta */}
-          <div className="absolute bottom-2 inset-x-2 flex items-center justify-between text-[11px] font-medium text-slate-300">
-            <span className="px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm border border-white/10 uppercase text-[10px] tracking-wider text-slate-300">
+          <div className="absolute bottom-2 inset-x-2 flex items-center justify-between text-[11px] font-medium text-slate-200 force-white" data-overlay>
+            <span className="px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-sm border border-white/20 uppercase text-[10px] tracking-wider text-slate-200 force-white font-semibold">
               {data?.format || "TV"}
             </span>
 
             {data?.status && (
               <span
-                className={`px-1.5 py-0.5 rounded backdrop-blur-sm text-[10px] font-medium ${
+                className={`px-1.5 py-0.5 rounded backdrop-blur-sm text-[10px] font-semibold force-white ${
                   data.status === "RELEASING"
-                    ? "bg-emerald-950/80 text-emerald-400 border border-emerald-500/30"
-                    : "bg-black/70 text-slate-400 border border-white/10"
+                    ? "bg-emerald-950/90 text-emerald-300 border border-emerald-500/40"
+                    : "bg-black/80 text-slate-200 border border-white/20"
                 }`}
               >
                 {formatStatus(data.status)}
@@ -124,7 +124,7 @@ const Card = ({ data, index, loading, hidden }) => {
             )}
 
             {data?.episodes ? (
-              <span className="text-slate-400 text-[10px]">
+              <span className="text-slate-200 text-[10px] force-white font-semibold bg-black/80 px-1.5 py-0.5 rounded border border-white/20">
                 EP {data.episodes}
               </span>
             ) : null}

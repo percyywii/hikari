@@ -13,7 +13,7 @@ const ContinueWatchingCard = ({ data, hidden }) => {
 
   return (
     <Link
-      className="w-full h-full aspect-video cursor-pointer rounded-xl relative overflow-hidden border-2 border-[#22212c] bg-[#22212c] group"
+      className="w-full h-full aspect-video cursor-pointer rounded-xl relative overflow-hidden border border-slate-200 dark:border-[#22212c] bg-slate-100 dark:bg-[#22212c] group shadow-sm hover:shadow-md transition-all"
       href={`/watch/${data?.id}?ep=${data?.episode}${data?.videoURL ? `&videoURL=${data?.videoURL}` : ""}`}
     >
       <Image
@@ -21,20 +21,20 @@ const ContinueWatchingCard = ({ data, hidden }) => {
         alt="thumbnail"
         height={284}
         width={388}
-        className="object-cover w-full h-full group-hover:h-[106%] duration-200"
+        className="object-cover w-full h-full group-hover:scale-105 duration-300"
       />
 
-      <div className="w-full h-20 absolute flex flex-col justify-between bottom-0 after:content-[''] after:w-full after:h-28 after:absolute after:bottom-0 after:bg-[linear-gradient(360deg,#060602,#00000069,transparent)]">
-        <div className="flex flex-col mx-3 justify-between gap-3 z-10">
+      <div className="w-full h-20 absolute flex flex-col justify-between bottom-0 after:content-[''] after:w-full after:h-28 after:absolute after:bottom-0 after:bg-[linear-gradient(360deg,#060602,#00000069,transparent)] force-white" data-overlay>
+        <div className="flex flex-col mx-3 justify-between gap-3 z-10 force-white">
 
-          <div className="flex items-center justify-between w-full ">
+          <div className="flex items-center justify-between w-full force-white">
             <div>
-              <div className="text-white w-full text-wrap break-words overflow-hidden text-ellipsis line-clamp-1 font-['poppins'] text-lg cursor-pointer hover:text-slate-200">{data?.title}</div>
-              <div className="text-[#ffffff8a] font-['poppins'] text-[14px]">Episode: {data?.episode}</div>
+              <div className="text-white w-full text-wrap break-words overflow-hidden text-ellipsis line-clamp-1 font-['Outfit'] font-semibold text-base cursor-pointer hover:text-cyan-300 force-white">{data?.title}</div>
+              <div className="text-slate-200 font-['Outfit'] text-[13px] force-white font-medium">Episode: {data?.episode}</div>
             </div>
 
-            <div className="p-[13px] rounded-full flex items-center justify-center bg-[#1a212bd0] text-[#8c97a7] cursor-pointer border border-[#242b35] backdrop-blur-sm hover:bg-[#2c3440d0] hover:text-[#abbcd5] duration-100 ">
-              <FaPlay />
+            <div className="p-3 rounded-full flex items-center justify-center bg-black/60 text-white cursor-pointer border border-white/20 backdrop-blur-md hover:bg-cyan-500 hover:text-black duration-200 force-white">
+              <FaPlay className="w-3 h-3 ml-0.5" />
             </div>
 
           </div>

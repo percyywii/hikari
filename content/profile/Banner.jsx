@@ -50,8 +50,8 @@ const Banner = ({ info, data }) => {
         />
       </div>
 
-      <div className="absolute bottom-0 right-1/2 translate-x-1/2 z-10 w-full max-w-xl px-4">
-        <div className="flex flex-col items-center gap-3">
+      <div className="absolute bottom-0 right-1/2 translate-x-1/2 z-10 w-full max-w-xl px-4 force-white" data-overlay>
+        <div className="flex flex-col items-center gap-3 force-white">
           <div className="relative w-28 h-28 border-4 border-cyan-500/40 rounded-full overflow-hidden shadow-2xl bg-[#12111a]">
             <Image
               src={info?.avatar?.large || info?.avatar || "/images/artworks-Xhbx2TzxHzrllTQR-kmD5OQ-t500x500.jpg"}
@@ -60,29 +60,29 @@ const Banner = ({ info, data }) => {
               className="object-cover"
             />
           </div>
-          <div className="font-['Outfit'] text-white text-2xl sm:text-3xl font-bold tracking-tight text-center">
+          <div className="font-['Outfit'] text-white text-2xl sm:text-3xl font-bold tracking-tight text-center drop-shadow-md force-white">
             {info?.name || "Hikari Member"}
           </div>
         </div>
 
-        <div className="text-slate-100 flex justify-center gap-8 sm:gap-14 mt-3 mb-6">
-          <div className="flex flex-col items-center">
-            <div className="font-bold text-lg text-white">{stats.watchedAnime}</div>
-            <div className="font-['Outfit'] text-xs sm:text-sm font-medium text-cyan-400 text-center">
+        <div className="text-slate-100 flex justify-center gap-8 sm:gap-14 mt-3 mb-6 force-white">
+          <div className="flex flex-col items-center force-white">
+            <div className="font-bold text-lg text-white drop-shadow force-white">{stats.watchedAnime}</div>
+            <div className="font-['Outfit'] text-xs sm:text-sm font-semibold text-cyan-300 text-center force-white">
               Anime Watched
             </div>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="font-bold text-lg text-white">{stats.episodesWatched}</div>
-            <div className="font-['Outfit'] text-xs sm:text-sm font-medium text-cyan-400 text-center">
+          <div className="flex flex-col items-center force-white">
+            <div className="font-bold text-lg text-white drop-shadow force-white">{stats.episodesWatched}</div>
+            <div className="font-['Outfit'] text-xs sm:text-sm font-semibold text-cyan-300 text-center force-white">
               Episodes Watched
             </div>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="font-bold text-lg text-white">{stats.count}</div>
-            <div className="font-['Outfit'] text-xs sm:text-sm font-medium text-cyan-400 text-center">
+          <div className="flex flex-col items-center force-white">
+            <div className="font-bold text-lg text-white drop-shadow force-white">{stats.count}</div>
+            <div className="font-['Outfit'] text-xs sm:text-sm font-semibold text-cyan-300 text-center force-white">
               Total Anime
             </div>
           </div>

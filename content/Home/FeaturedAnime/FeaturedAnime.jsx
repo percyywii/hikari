@@ -60,36 +60,36 @@ const FeaturedAnime = ({ data }) => {
           <Image src={populardata?.bannerImage} alt="Featured Banner" fill quality={100} className="object-cover !relative !h-[24rem] rounded-2xl aspect-[9/14]" />
         </div>
 
-        <div className="absolute z-10 bottom-1/2 translate-y-1/2 max-[700px]:left-[12px] left-[2rem] flex gap-8">
+        <div className="absolute z-10 bottom-1/2 translate-y-1/2 max-[700px]:left-[12px] left-[2rem] flex gap-8 force-white" data-overlay>
           <div className="max-[990px]:hidden shrink-0">
             <Image src={populardata?.coverImage?.extraLarge} alt="Cover" width={200} height={340} className="object-cover rounded-xl shadow-2xl border border-white/20" />
           </div>
 
-          <div className="max-w-xl">
-            <h3 className="text-sm my-2 text-pink-400 font-semibold uppercase tracking-wider">#{data?.indexOf(populardata) + 1} Trending</h3>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white font-bold tracking-tight line-clamp-1 font-['Outfit'] drop-shadow-md">
+          <div className="max-w-xl force-white">
+            <h3 className="text-sm my-2 text-pink-400 font-semibold uppercase tracking-wider force-white">#{data?.indexOf(populardata) + 1} Trending</h3>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white font-bold tracking-tight line-clamp-1 font-['Outfit'] drop-shadow-md force-white">
               {populardata?.title?.english || populardata?.title?.romaji}
             </h2>
 
-            <div className="flex items-center gap-4 text-xs sm:text-sm my-2 text-slate-200">
-              <span className="flex items-center gap-1">
+            <div className="flex items-center gap-4 text-xs sm:text-sm my-2 text-slate-200 force-white">
+              <span className="flex items-center gap-1 force-white">
                 {populardata?.format}
               </span>
 
-              <span className={populardata?.status === "RELEASING" ? "text-emerald-400 font-semibold" : "text-slate-300"}>
+              <span className={populardata?.status === "RELEASING" ? "text-emerald-400 font-semibold force-white" : "text-slate-300 force-white"}>
                 {populardata?.status === "RELEASING" ? "● Airing" : populardata?.status}
               </span>
 
-              <span className="flex items-center text-slate-300">
+              <span className="flex items-center text-slate-300 force-white">
                 {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"][populardata?.startDate?.month]} {populardata?.startDate?.day}, {populardata?.startDate?.year}
               </span>
 
-              <span className="flex items-center px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold">
+              <span className="flex items-center px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold force-white">
                 EP {populardata?.nextAiringEpisode?.episode ? populardata.nextAiringEpisode.episode - 1 : populardata?.episodes}
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-200 line-clamp-2 leading-relaxed mt-2 mb-5 font-normal drop-shadow">
+            <p className="text-xs sm:text-sm text-slate-200 line-clamp-2 leading-relaxed mt-2 mb-5 font-normal drop-shadow force-white">
               {populardata?.description?.replace(/<[^>]*>/g, "")}
             </p>
             <Button text="Watch now" icon={<FaCirclePlay />} animeID={populardata?.id} />

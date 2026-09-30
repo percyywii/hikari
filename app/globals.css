@@ -129,34 +129,76 @@ html.light .divide-\[\#161926\] > * + * {
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
+/* Guaranteed White Text for Dark Overlays, Posters & Media Badges */
+html.light .force-white,
+html.light .force-white *,
+html.light [data-overlay],
+html.light [data-overlay] *,
+html.light [data-theme-preserve],
+html.light [data-theme-preserve] * {
+  color: #FFFFFF !important;
+}
+
+html.light .force-white-muted,
+html.light .force-white-muted *,
+html.light [data-overlay] .text-slate-200,
+html.light [data-overlay] .text-slate-300,
+html.light [data-overlay] .text-slate-400 {
+  color: rgba(241, 245, 249, 0.88) !important;
+}
+
+html.light [data-overlay] .text-amber-400,
+html.light [data-overlay] .text-amber-300,
+html.light .force-white .text-amber-400 {
+  color: #FBBF24 !important;
+}
+
+html.light [data-overlay] .text-cyan-400,
+html.light [data-overlay] .text-cyan-300,
+html.light .force-white .text-cyan-400,
+html.light .force-white .text-cyan-300 {
+  color: #67E8F9 !important;
+}
+
+html.light [data-overlay] .text-pink-400,
+html.light .force-white .text-pink-400 {
+  color: #F472B6 !important;
+}
+
+html.light [data-overlay] .text-emerald-400,
+html.light [data-overlay] .text-emerald-300,
+html.light .force-white .text-emerald-400 {
+  color: #34D399 !important;
+}
+
 /* Headings in Light Mode */
-html.light h1:not(.art-video-player *),
-html.light h2:not(.art-video-player *),
-html.light h3:not(.art-video-player *),
-html.light h4:not(.art-video-player *),
-html.light h5:not(.art-video-player *),
-html.light h6:not(.art-video-player *) {
+html.light h1:not(.art-video-player *):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *),
+html.light h2:not(.art-video-player *):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *),
+html.light h3:not(.art-video-player *):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *),
+html.light h4:not(.art-video-player *):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *),
+html.light h5:not(.art-video-player *):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *),
+html.light h6:not(.art-video-player *):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *) {
   color: #1D1D1F !important;
 }
 
 /* Text overrides: transform pale/white text to crisp dark text in light mode */
-html.light .text-white:not(.art-video-player *):not([class*="bg-cyan"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-pink"]):not([class*="bg-emerald"]):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light [class*="text-[#fff"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light [class*="text-[#f6"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light [class*="text-[#eb"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light [class*="text-[#ef"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light [class*="text-[#da"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light [class*="text-[#c3"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light .text-slate-100:not(.art-video-player *):not([class*="bg-cyan"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-pink"]):not([class*="bg-emerald"]):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white),
-html.light .text-slate-200:not(.art-video-player *):not([class*="bg-cyan"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-pink"]):not([class*="bg-emerald"]):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white) {
+html.light .text-white:not(.art-video-player *):not([class*="bg-cyan"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-pink"]):not([class*="bg-emerald"]):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light [class*="text-[#fff"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light [class*="text-[#f6"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light [class*="text-[#eb"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light [class*="text-[#ef"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light [class*="text-[#da"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light [class*="text-[#c3"]:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light .text-slate-100:not(.art-video-player *):not([class*="bg-cyan"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-pink"]):not([class*="bg-emerald"]):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *),
+html.light .text-slate-200:not(.art-video-player *):not([class*="bg-cyan"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-pink"]):not([class*="bg-emerald"]):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *) {
   color: #1D1D1F !important;
 }
 
-html.light .text-slate-300:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white) {
+html.light .text-slate-300:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *) {
   color: #334155 !important;
 }
 
-html.light .text-slate-400:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white) {
+html.light .text-slate-400:not(.art-video-player *):not([class*="bg-black"]):not([class*="bg-slate-900"]):not(.force-white):not(.force-white *):not([data-overlay] *):not([data-theme-preserve] *):not([class*="from-black"] *) {
   color: #64748B !important;
 }
 

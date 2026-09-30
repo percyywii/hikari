@@ -113,18 +113,18 @@ const TrendingCard = ({ info }) => {
 
       {/* Apple-Grade Frosted Glass Rating Badge */}
       {info?.averageScore && (
-        <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-full flex items-center gap-1.5 text-amber-400 text-xs font-semibold shadow-md z-10">
+        <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-full flex items-center gap-1.5 text-amber-400 text-xs font-semibold shadow-md z-10 force-white" data-overlay>
           <FaStar className="w-3 h-3 text-amber-400" />
-          <span>{(info.averageScore / 10).toFixed(1)}</span>
+          <span className="text-amber-400">{(info.averageScore / 10).toFixed(1)}</span>
         </div>
       )}
 
       {/* Protective Dark Gradient Bottom Overlay with Legible Typography */}
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-3 pt-10 z-10 opacity-100 group-hover:opacity-90 transition-opacity">
-        <h3 className="text-white font-semibold text-sm line-clamp-1 font-['Outfit'] drop-shadow">
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-3 pt-10 z-10 opacity-100 group-hover:opacity-90 transition-opacity force-white" data-overlay>
+        <h3 className="text-white font-semibold text-sm line-clamp-1 font-['Outfit'] drop-shadow force-white">
           {info?.title?.english || info?.title?.romaji}
         </h3>
-        <p className="text-slate-300 text-xs mt-0.5 drop-shadow">
+        <p className="text-slate-200 force-white text-xs mt-0.5 drop-shadow">
           {info?.seasonYear ? `${info.seasonYear}` : ""}
           {info?.genres?.[0] ? ` • ${info.genres[0]}` : ""}
         </p>

@@ -57,9 +57,12 @@ const EpisodeSelector = ({ AnimeID }) => {
 
   useEffect(() => {
     const wantsDub = !isSubSelected;
-    setIsDub(wantsDub);
+    setIsDub((prev) => (prev !== wantsDub ? wantsDub : prev));
     if (setServer) {
-      setServer(wantsDub ? "dub" : "sub");
+      setServer((prev) => {
+        const next = wantsDub ? "dub" : "sub";
+        return prev !== next ? next : prev;
+      });
     }
   }, [isSubSelected, setIsDub, setServer]);
 

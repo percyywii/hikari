@@ -201,6 +201,7 @@ export function WatchAreaContextProvider({ children, AnimeInfo }) {
             idMal: AnimeInfo.idMal,
             episode,
             title: AnimeInfo.title,
+            countryOfOrigin: AnimeInfo.countryOfOrigin,
             retry: retryKey,
           }),
           activeEpisodes.find((item) => item?.number === episode),

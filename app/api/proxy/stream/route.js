@@ -98,6 +98,43 @@ function decryptPlaylist(rawText, pk) {
   return rawText;
 }
 
+function formatAssTime(timeStr) {
+  const parts = String(timeStr || "").split(":");
+  if (parts.length === 3) {
+    const h = parts[0].padStart(2, "0");
+    const m = parts[1].padStart(2, "0");
+    const [s, cs] = (parts[2] || "").split(".");
+    const sec = (s || "00").padStart(2, "0");
+    const ms = (cs || "00").padEnd(3, "0").slice(0, 3);
+    return `${h}:${m}:${sec}.${ms}`;
+  }
+  return timeStr;
+}
+
+function assToVtt(assText) {
+  const lines = assText.split(/\r?\n/);
+  const cues = [];
+  for (const line of lines) {
+    if (line.startsWith("Dialogue:")) {
+      const parts = line.substring(9).split(",");
+      if (parts.length >= 10) {
+        const start = parts[1].trim();
+        const end = parts[2].trim();
+        const rawText = parts.slice(9).join(",").trim();
+        const clean = rawText
+          .replace(/\{[^}]*\}/g, "")
+          .replace(/\\N/gi, "\n")
+          .replace(/\\n/gi, "\n")
+          .trim();
+        if (clean && start && end) {
+          cues.push(`${formatAssTime(start)} --> ${formatAssTime(end)}\n${clean}`);
+        }
+      }
+    }
+  }
+  return `WEBVTT\n\n${cues.join("\n\n")}`;
+}
+
 export async function GET(req) {
   const urlParam = req.nextUrl.searchParams.get("url");
   if (!urlParam) {
@@ -189,7 +226,26 @@ export async function GET(req) {
         });
       }
 
+      const isAssSubtitle = targetUrl.pathname.endsWith(".ass") || targetUrl.pathname.endsWith(".ssa");
+      if (isAssSubtitle) {
+        const text = new TextDecoder().decode(body);
+        const vtt = assToVtt(text);
+        return new NextResponse(vtt, {
+          status: 200,
+          headers: {
+            "Content-Type": "text/vtt; charset=utf-8",
+            "Cache-Control": "public, max-age=86400",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "*",
+          },
+        });
+      }
+
       let finalContentType = contentType || "application/octet-stream";
+      if (targetUrl.pathname.endsWith(".vtt")) {
+        finalContentType = "text/vtt; charset=utf-8";
+      }
+
       const isMediaSegment =
         targetUrl.pathname.includes("/seg-") ||
         targetUrl.pathname.endsWith(".ts") ||

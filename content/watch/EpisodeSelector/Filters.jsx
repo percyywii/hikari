@@ -1,7 +1,20 @@
 import Select from "@/components/ui/Select";
+import { useMemo } from "react";
 
 const Filters = ({ setDubSelected, setEpFromTo, SplitedEpisodes, chunkSize, hasDub = true }) => {
-  const dubOptions = hasDub ? ["sub & dub", "sub", "dub"] : ["sub"];
+  const dubOptions = useMemo(
+    () => (hasDub ? ["sub & dub", "sub", "dub"] : ["sub"]),
+    [hasDub]
+  );
+
+  const epRangeOptions = useMemo(
+    () =>
+      Array.from(
+        { length: SplitedEpisodes?.length ?? 0 },
+        (_, i) => `${i * chunkSize + 1} - ${(i + 1) * chunkSize}`
+      ),
+    [SplitedEpisodes?.length, chunkSize]
+  );
 
   return (
     <div className="flex justify-between px-2 py-3 gap-4">
@@ -11,7 +24,7 @@ const Filters = ({ setDubSelected, setEpFromTo, SplitedEpisodes, chunkSize, hasD
       <div className="w-full">
         <Select
           setSelected={setEpFromTo}
-          data={Array.from({ length: SplitedEpisodes?.length ?? 0 }, (_, i) => `${i * chunkSize + 1} - ${(i + 1) * chunkSize}`)}
+          data={epRangeOptions}
           defaultValue={0}
         />
       </div>

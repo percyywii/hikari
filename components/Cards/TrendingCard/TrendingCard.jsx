@@ -60,8 +60,8 @@ const TrendingCard = ({ info }) => {
       setIsTrailerFetched(true)
     }
 
-    if (imageHovered && !trailer && !isTrailerFetched) {
-      fetch_and_set_data(info?.trailer?.id || null)
+    if (videoPlay && imageHovered && info?.trailer?.id && !trailer && !isTrailerFetched) {
+      fetch_and_set_data(info.trailer.id)
     }
   }, [imageHovered, info?.trailer?.id, isTrailerFetched, trailer])
 

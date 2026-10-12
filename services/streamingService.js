@@ -29,6 +29,15 @@ export const streamingService = {
           : animeContext?.title || "";
       if (title) params.set("title", title);
 
+      const nativeTitle =
+        typeof animeContext?.title === "object"
+          ? animeContext.title.native || ""
+          : animeContext?.nativeTitle || "";
+      if (nativeTitle) params.set("nativeTitle", nativeTitle);
+
+      const country = animeContext?.countryOfOrigin || animeContext?.country || "";
+      if (country) params.set("country", country);
+
       const retry = animeContext?.retry;
       if (retry !== undefined && retry !== null) params.set("retry", String(retry));
 

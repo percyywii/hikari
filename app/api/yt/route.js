@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+const ytCache = new Map();
+const YT_CACHE_TTL_MS = 2 * 60 * 60 * 1000;
+
 function getEmbedUrl(id) {
   return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&controls=0&loop=1&playlist=${encodeURIComponent(id)}`;
 }
@@ -15,16 +18,24 @@ export async function GET(req) {
     return NextResponse.json({ message: 'Id is required' }, { status: 400 });
   }
 
+  const cacheKey = `${id}:${quality || 'default'}`;
+  const cached = ytCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return NextResponse.json(cached.data, {
+      headers: {
+        "Cache-Control": "public, s-maxage=7200, stale-while-revalidate=86400",
+      },
+    });
+  }
+
   try {
-    // Import external @distube/ytdl-core (Node native)
     const ytdlModule = await import('@distube/ytdl-core');
     const ytdl = ytdlModule?.default || ytdlModule;
 
     if (!ytdl || typeof ytdl.getInfo !== 'function') {
-      return NextResponse.json(
-        { url: null, embedUrl: getEmbedUrl(id), message: 'Trailer parser unavailable' },
-        { status: 200 }
-      );
+      const fallback = { url: null, embedUrl: getEmbedUrl(id), message: 'Trailer parser unavailable' };
+      ytCache.set(cacheKey, { data: fallback, expiresAt: Date.now() + YT_CACHE_TTL_MS });
+      return NextResponse.json(fallback);
     }
 
     const constructedUrl =
@@ -32,7 +43,13 @@ export async function GET(req) {
         ? ytdl.getURLVideoID(`https://www.youtube.com/watch?v=${id}`)
         : `https://www.youtube.com/watch?v=${id}`;
 
-    const info = await ytdl.getInfo(constructedUrl);
+    // 3.5-second hard timeout to avoid blocking page navigation
+    const info = await Promise.race([
+      ytdl.getInfo(constructedUrl),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("YouTube parser timed out")), 3500)
+      ),
+    ]);
 
     let video = null;
     if (quality === "all") {
@@ -50,16 +67,25 @@ export async function GET(req) {
           ?.find((e) => e.url)?.url || null;
     }
 
-    return NextResponse.json({ url: video, embedUrl: getEmbedUrl(id) });
-  } catch (error) {
-    console.warn(`YouTube trailer unavailable for ${id}:`, error?.message || error);
-    return NextResponse.json(
-      {
-        url: null,
-        embedUrl: getEmbedUrl(id),
-        message: 'Trailer unavailable',
+    const payload = { url: video, embedUrl: getEmbedUrl(id) };
+    ytCache.set(cacheKey, { data: payload, expiresAt: Date.now() + YT_CACHE_TTL_MS });
+
+    return NextResponse.json(payload, {
+      headers: {
+        "Cache-Control": "public, s-maxage=7200, stale-while-revalidate=86400",
       },
-      { status: 200 }
-    );
+    });
+  } catch (error) {
+    const fallback = {
+      url: null,
+      embedUrl: getEmbedUrl(id),
+      message: 'Trailer unavailable',
+    };
+    ytCache.set(cacheKey, { data: fallback, expiresAt: Date.now() + 15 * 60 * 1000 });
+    return NextResponse.json(fallback, {
+      headers: {
+        "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800",
+      },
+    });
   }
 }

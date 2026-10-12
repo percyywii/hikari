@@ -585,9 +585,13 @@ const useArtplayer = (getInstance) => {
 
     art.on("video:timeupdate", throttledSaveProgress);
 
-    // Resume playback from saved timestamp
+    // Resume playback from saved timestamp and ensure default subtitle displays
     art.on("ready", () => {
       if (!isCurrent()) return;
+      if (defaultSub?.url && art.subtitle) {
+        art.subtitle.switch(defaultSub.url, { name: defaultSub.label || "English" });
+        art.subtitle.show = true;
+      }
       try {
         const watchHistory =
           JSON.parse(localStorage.getItem("hikari_watch_history") || localStorage.getItem("tenro_watch_history")) ||

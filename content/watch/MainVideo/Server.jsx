@@ -22,7 +22,10 @@ const Server = () => {
     setAudioTrack,
     availableAudioTracks,
     retryWatch,
+    AnimeInfo,
   } = useWatchContext();
+
+  const isDonghua = Boolean(watchInfo?.watchData?.isDonghua || AnimeInfo?.countryOfOrigin === "CN");
 
   const [subEpisodes, dubEpisodes] = useMemo(() => {
     if (episodes === "loading" || !Array.isArray(episodes)) return [[], []];
@@ -32,11 +35,16 @@ const Server = () => {
     ];
   }, [episodes]);
 
-  const hasSub = subEpisodes.length > 0;
-  const hasDub = dubEpisodes.length > 0;
+  const hasSub = watchInfo?.watchData?.hasSub !== undefined
+    ? Boolean(watchInfo.watchData.hasSub)
+    : subEpisodes.length > 0;
+  const hasDub = watchInfo?.watchData?.hasDub !== undefined
+    ? Boolean(watchInfo.watchData.hasDub)
+    : dubEpisodes.length > 0;
 
   const sources = watchInfo?.watchData?.sources || [];
   const currentSource = sources[sourceIndex] || sources[0];
+  const externalLink = watchInfo?.watchData?.externalLink;
 
   const handleAudioSelect = (type) => {
     if (type === "dub") {
@@ -46,7 +54,7 @@ const Server = () => {
     } else {
       setIsDub(false);
       setServer("sub");
-      setAudioTrack("jpn");
+      setAudioTrack(isDonghua ? "chi" : "jpn");
     }
   };
 
@@ -56,6 +64,11 @@ const Server = () => {
       <div className="px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
           <span>Audio Feed</span>
+          {isDonghua && (
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">
+              DONGHUA
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -73,7 +86,7 @@ const Server = () => {
             }`}
           >
             <MdSubtitles className="w-3.5 h-3.5" />
-            <span>Sub (Japanese)</span>
+            <span>{isDonghua ? "Sub (Mandarin / Original)" : "Sub (Japanese)"}</span>
             {!hasSub && <span className="text-[10px] text-slate-400 dark:text-slate-500">(N/A)</span>}
           </button>
 

@@ -3,7 +3,8 @@
 import { useWatchContext } from "@/context/Watch";
 
 const EpInfo = ({ episode }) => {
-  const { isDub } = useWatchContext();
+  const { isDub, watchInfo, AnimeInfo } = useWatchContext();
+  const isDonghua = Boolean(watchInfo?.watchData?.isDonghua || AnimeInfo?.countryOfOrigin === "CN");
 
   return (
     <div className="h-full flex items-center justify-center flex-col min-w-[240px] px-6 py-4 text-center border-b md:border-b-0 md:border-r border-[#1A1D2B] bg-[#0B0D13]">
@@ -14,7 +15,7 @@ const EpInfo = ({ episode }) => {
         </p>
       </div>
       <p className="text-[11px] text-slate-400 mt-1">
-        Mode: <span className="text-slate-300 font-medium">{isDub ? "English Dub" : "Japanese Sub"}</span>
+        Mode: <span className="text-slate-300 font-medium">{isDub ? "English Dub" : isDonghua ? "Mandarin (Original)" : "Japanese Sub"}</span>
       </p>
     </div>
   );

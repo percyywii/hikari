@@ -17,7 +17,13 @@ const EpisodeSelector = ({ AnimeID }) => {
   const [showType, setShowType] = useState("list")
 
   const chunkSize = 80;
-  const { setIsDub, setServer, episode, setEpisodes, episodes, AnimeInfo } = useWatchContext();
+  const { setIsDub, setServer, episode, setEpisodes, episodes, AnimeInfo, watchInfo } = useWatchContext();
+
+  const isDonghua = Boolean(watchInfo?.watchData?.isDonghua || AnimeInfo?.countryOfOrigin === "CN");
+  const hasDub = watchInfo?.watchData?.hasDub !== undefined
+    ? Boolean(watchInfo.watchData.hasDub)
+    : !isDonghua;
+
   useEffect(() => {
     let cancelled = false;
     const fetchData = async () => {
@@ -38,7 +44,13 @@ const EpisodeSelector = ({ AnimeID }) => {
   }, [AnimeID, AnimeInfo, setEpisodes]);
 
   const loading = episodes === "loading";
-  const isSubSelected = dubSelected.id === 0 || dubSelected.id === 1;
+  const isSubSelected = dubSelected?.value ? dubSelected.value !== "dub" : (dubSelected.id === 0 || dubSelected.id === 1);
+
+  useEffect(() => {
+    if (!hasDub && dubSelected?.value === "dub") {
+      setDubSelected({ id: 0, value: "sub" });
+    }
+  }, [hasDub, dubSelected?.value]);
 
   const filteredEpisodes = useMemo(() => filterEpisodes(episodes, isSubSelected, loading), [loading, isSubSelected, episodes]);
   const SplitedEpisodes = useMemo(() => chunkEpisodes(filteredEpisodes, chunkSize), [filteredEpisodes]);
@@ -61,7 +73,7 @@ const EpisodeSelector = ({ AnimeID }) => {
   return (
     <div className="bg-white dark:bg-[#10121A] border border-slate-200/90 dark:border-[#1E2235] w-full max-w-[22rem] EPSResponsive rounded-2xl flex flex-col shadow-xl shadow-black/5 dark:shadow-black/30 overflow-hidden transition-colors">
       <SearchBar searchQuery={searchQuery} handleSearchQueryChange={handleSearchQueryChange} showType={showType} setShowType={setShowType} />
-      <Filters setDubSelected={setDubSelected} setEpFromTo={setEpFromTo} SplitedEpisodes={SplitedEpisodes} chunkSize={chunkSize} />
+      <Filters setDubSelected={setDubSelected} setEpFromTo={setEpFromTo} SplitedEpisodes={SplitedEpisodes} chunkSize={chunkSize} hasDub={hasDub} />
       <EpisodeList loading={loading} searchQuery={searchQuery} data={filteredEpisodes} SplitedEpisodes={SplitedEpisodes} epFromTo={epFromTo} episode={episode} watchedEP={watchedEP} showType={showType} />
     </div>
   );

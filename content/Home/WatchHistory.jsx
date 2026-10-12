@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import ContinueWatchingCard from "@/components/Cards/ContinueWatchingCard/ContinueWatchingCard";
 import { FaArrowRight } from "react-icons/fa";
 import { getWatchProgress } from "@/utils/GetProgress";
@@ -32,10 +33,13 @@ const WatchHistory = () => {
           </h2>
         </div>
 
-        <div className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm font-semibold transition-colors">
-          <span>See All</span>
-          <FaArrowRight className="w-3 h-3" />
-        </div>
+        <Link
+          href="/continue-watching"
+          className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm font-semibold transition-colors group"
+        >
+          <span>See More</span>
+          <FaArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+        </Link>
       </div>
 
       <div className="mb-20 grid grid-cols-[repeat(auto-fit,minmax(343px,1fr))] max-[725px]:grid-cols-[repeat(auto-fit,minmax(285px,1fr))] gap-4">

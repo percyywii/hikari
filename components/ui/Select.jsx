@@ -12,8 +12,15 @@ const Select = ({ data, defaultValue, setSelected }) => {
   }
 
   useEffect(() => {
-    setSelected({ id: isOpened.id, value: data[isOpened.id] })
-  }, [isOpened.id])
+    if (isOpened.id >= data.length && data.length > 0) {
+      setisOpened((prev) => ({ ...prev, id: 0 }));
+    }
+  }, [data.length, isOpened.id]);
+
+  useEffect(() => {
+    const validId = data.length > 0 ? Math.min(Math.max(0, isOpened.id), data.length - 1) : 0;
+    setSelected({ id: validId, value: data[validId] });
+  }, [isOpened.id, data]);
 
 
   return (

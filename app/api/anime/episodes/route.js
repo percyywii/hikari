@@ -10,8 +10,9 @@ export async function GET(req, { params }) {
 
 
 
-    if (!animeId || !(titles.english)) {
-      return NextResponse.json({ error: "Anime ID Or title is required" }, { status: 400 });
+    const hasValidTitle = Boolean(titles?.english || titles?.romaji || titles?.native || titles?.userPreferred);
+    if (!animeId || !hasValidTitle) {
+      return NextResponse.json({ error: "Anime ID or title is required" }, { status: 400 });
     }
 
     const data = await getEpisodes(animeId, titles);

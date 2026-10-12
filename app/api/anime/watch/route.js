@@ -14,6 +14,9 @@ export async function GET(req) {
     const malId = searchParams.get("malId") || searchParams.get("mal_id");
     const tmdbId = searchParams.get("tmdbId") || searchParams.get("themoviedb_id");
     const title = searchParams.get("title");
+    const nativeTitle = searchParams.get("nativeTitle");
+    const country = searchParams.get("country");
+    const year = searchParams.get("year");
     const retry = searchParams.get("retry");
 
     // Parse legacy episodeId if explicit animeId or episode is missing
@@ -49,6 +52,9 @@ export async function GET(req) {
       malId: malId ? Number(malId) : null,
       tmdbId: tmdbId ? Number(tmdbId) : null,
       title,
+      nativeTitle,
+      country,
+      year: year ? Number(year) : null,
       retry: retry ? Number(retry) || 0 : null,
     });
 
@@ -58,6 +64,8 @@ export async function GET(req) {
           error: streamData?.error || "No playable stream source could be found for this episode.",
           sources: [],
           subtitles: [],
+          isDonghua: streamData?.isDonghua || false,
+          externalLink: streamData?.externalLink || null,
         },
         { status: 404 }
       );
@@ -73,6 +81,10 @@ export async function GET(req) {
         outro: streamData.outro || null,
         headers: streamData.sources[0]?.headers || {},
         pk: streamData.pk || streamData.sources[0]?.pk || "",
+        hasSub: streamData.hasSub !== undefined ? streamData.hasSub : true,
+        hasDub: streamData.hasDub !== undefined ? streamData.hasDub : false,
+        isDonghua: streamData.isDonghua || false,
+        externalLink: streamData.externalLink || null,
       },
       { status: 200 }
     );
